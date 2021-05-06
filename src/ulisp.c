@@ -549,7 +549,7 @@ int EpromReadInt (int *addr) {
 #endif
 
 unsigned int loadimage (object *arg) {
-  TODO(xxxxx);
+  TODO(loadimage);
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
   File file;
@@ -596,7 +596,7 @@ unsigned int loadimage (object *arg) {
 }
 
 void autorunimage () {
-  TODO(xxxxx);
+  TODO(autorunimage);
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
   File file = SD.open("/ULISP.IMG");
@@ -1280,23 +1280,23 @@ object *cdrx (object *arg) {
 // I2C interface
 
 void I2Cinit (bool enablePullup) {
-  TODO(xxxxx);
+  TODO(I2Cinit);
   (void) enablePullup;
   Wire.begin();
 }
 
 int I2Cread () {
-  TODO(xxxxx);
+  TODO(I2Cread);
   return Wire.read();
 }
 
 void I2Cwrite (uint8_t data) {
-  TODO(xxxxx);
+  TODO(I2Cwrite);
   Wire.write(data);
 }
 
 bool I2Cstart (uint8_t address, uint8_t read) {
- TODO(xxxxx);
+ TODO(I2Cstart);
  int ok = true;
  if (read == 0) {
    Wire.beginTransmission(address);
@@ -1308,7 +1308,7 @@ bool I2Cstart (uint8_t address, uint8_t read) {
 }
 
 bool I2Crestart (uint8_t address, uint8_t read) {
-  TODO(xxxxx);
+  TODO(I2Crestart);
   int error = (Wire.endTransmission(false) != 0);
   if (read == 0) Wire.beginTransmission(address);
   else Wire.requestFrom(address, I2CCount);
@@ -1316,19 +1316,19 @@ bool I2Crestart (uint8_t address, uint8_t read) {
 }
 
 void I2Cstop (uint8_t read) {
-  TODO(xxxxx);
+  TODO(I2Cstop);
   if (read == 0) Wire.endTransmission(); // Check for error?
 }
 
 // Streams
 
 inline int spiread () { 
-  TODO(xxxxx);
+  TODO(spiread);
   return SPI.transfer(0); 
 }
 
 inline int serial1read () { 
-  TODO(xxxxx);
+  TODO(serial1read);
   while (!Serial1.available()) testescape(); return Serial1.read(); 
 }
 
@@ -1348,7 +1348,7 @@ WiFiClient client;
 WiFiServer server(80);
 
 inline int WiFiread () {
-  TODO(xxxxx);
+  TODO(WiFiread);
   if (LastChar) {
     char temp = LastChar;
     LastChar = 0;
@@ -1358,13 +1358,13 @@ inline int WiFiread () {
 }
 
 void serialbegin (int address, int baud) {
-  TODO(xxxxx);
+  TODO(serialbegin);
   if (address == 1) Serial1.begin((long)baud*100);
   else error(WITHSERIAL, PSTR("port not supported"), number(address));
 }
 
 void serialend (int address) {
-  TODO(xxxxx);
+  TODO(serialend);
   if (address == 1) {Serial1.flush(); Serial1.end(); }
 }
 
@@ -1391,17 +1391,17 @@ gfun_t gstreamfun (object *args) {
 }
 
 inline void spiwrite (char c) { 
-  TODO(xxxxx);
+  TODO(spiwrite);
   SPI.transfer(c); 
 }
 
 inline void serial1write (char c) { 
-  TODO(xxxxx);
+  TODO(serial1write);
   Serial1.write(c); 
 }
 
 inline void WiFiwrite (char c) { 
-  TODO(xxxxx);
+  TODO(WiFiwrite);
   client.write(c); 
 }
 
@@ -1932,7 +1932,7 @@ object *sp_withi2c (object *args, object *env) {
 }
 
 object *sp_withspi (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(sp_withspi);
   object *params = first(args);
   if (params == NULL) error2(WITHSPI, nostream);
   object *var = first(params);
@@ -2016,7 +2016,7 @@ object *sp_withgfx (object *args, object *env) {
 }
 
 object *sp_withclient (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(sp_withclient);
   object *params = first(args);
   object *var = first(params);
   params = cdr(params);
@@ -3419,7 +3419,7 @@ object *fn_cls (object *args, object *env) {
 // Arduino procedures
 
 object *fn_pinmode (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_pinmode);
   (void) env;
   int pin = checkinteger(PINMODE, first(args));
   PinMode pm = INPUT;
@@ -3437,14 +3437,14 @@ object *fn_pinmode (object *args, object *env) {
 }
 
 object *fn_digitalread (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_digitalread);
   (void) env;
   int pin = checkinteger(DIGITALREAD, first(args));
   if (digitalRead(pin) != 0) return tee; else return nil;
 }
 
 object *fn_digitalwrite (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_digitalwrite);
   (void) env;
   int pin = checkinteger(DIGITALWRITE, first(args));
   object *arg = second(args);
@@ -3457,7 +3457,7 @@ object *fn_digitalwrite (object *args, object *env) {
 }
 
 object *fn_analogread (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_analogread);
   (void) env;
   int pin;
   object *arg = first(args);
@@ -3470,7 +3470,7 @@ object *fn_analogread (object *args, object *env) {
 }
 
 object *fn_analogreadresolution (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_analogreadresolution);
   (void) env;
   object *arg = first(args);
   #if defined(ESP32)
@@ -3482,7 +3482,7 @@ object *fn_analogreadresolution (object *args, object *env) {
 }
 
 object *fn_analogwrite (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_analogwrite);
   (void) env;
   int pin = checkinteger(ANALOGWRITE, first(args));
   checkanalogwrite(pin);
@@ -3492,7 +3492,7 @@ object *fn_analogwrite (object *args, object *env) {
 }
 
 object *fn_delay (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_delay);
   (void) env;
   object *arg1 = first(args);
   delay(checkinteger(DELAY, arg1));
@@ -3500,13 +3500,13 @@ object *fn_delay (object *args, object *env) {
 }
 
 object *fn_millis (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(xxxfn_millisxx);
   (void) args, (void) env;
   return number(millis());
 }
 
 object *fn_sleep (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_sleep);
   (void) env;
   object *arg1 = first(args);
   sleep(checkinteger(SLEEP, arg1));
@@ -3514,7 +3514,7 @@ object *fn_sleep (object *args, object *env) {
 }
 
 object *fn_note (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_note);
   (void) env;
   static int pin = 255;
   if (args != NULL) {
@@ -3727,21 +3727,21 @@ object *fn_listlibrary (object *args, object *env) {
 // Wi-fi
 
 object *fn_available (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_available);
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(AVAILABLE, PSTR("invalid stream"));
   return number(client.available());
 }
 
 object *fn_wifiserver (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_wifiserver);
   (void) args, (void) env;
   server.begin();
   return nil;
 }
 
 object *fn_wifisoftap (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_wifisoftap);
   (void) env;
   char ssid[33], pass[65];
   if (args == NULL) return WiFi.softAPdisconnect(true) ? tee : nil;
@@ -3763,20 +3763,20 @@ object *fn_wifisoftap (object *args, object *env) {
 }
 
 object *fn_connected (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_connected);
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(CONNECTED, PSTR("invalid stream"));
   return client.connected() ? tee : nil;
 }
 
 object *fn_wifilocalip (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_wifilocalip);
   (void) args, (void) env;
   return lispstring((char*)WiFi.localIP().toString().c_str());
 }
 
 object *fn_wificonnect (object *args, object *env) {
-  TODO(xxxxx);
+  TODO(fn_wificonnect);
   (void) env;
   char ssid[33], pass[65];
   if (args == NULL) { WiFi.disconnect(true); return nil; }
@@ -4533,7 +4533,7 @@ void deletesymbol (symbol_t name) {
 }
 
 void testescape () {
-  TODO(xxxxx);
+  TODO(testescape);
   if (Serial.read() == '~') error2(0, PSTR("escape!"));
 }
 
