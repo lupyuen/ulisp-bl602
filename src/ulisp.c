@@ -42,6 +42,8 @@ const char LispLibrary[] PROGMEM = "";
 #include <assert.h>
 #include "ulisp.h"
 
+#define putchar(c)   printf("%c", c)  //  putchar doesn't work on BL602
+
 #if defined(gfxsupport)
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_SSD1306.h>
@@ -227,7 +229,7 @@ object *edit (object *fun);
 void pfl (pfun_t pfun);
 void pserial (char c);
 void pfstring (PGM_P s, pfun_t pfun);
-void pstring (char *s, pfun_t pfun);
+void pstring (const char *s, pfun_t pfun);
 static void pln (pfun_t pfun);
 static int maxbuffer (char *buffer);
 uint8_t nthchar (object *string, int n);
@@ -295,6 +297,7 @@ const char oddargs[] PROGMEM = "odd number of arguments";
 // Set up workspace
 
 void initworkspace () {
+  printf("initworkspace\r\n");
   Freelist = NULL;
   for (int i=WORKSPACESIZE-1; i>=0; i--) {
     object *obj = &Workspace[i];
@@ -4810,7 +4813,7 @@ static int maxbuffer (char *buffer) {
 void pserial (char c) {
   LastPrint = c;
   if (c == '\n') { printf("\r\n"); }
-  putchar(c);
+  printf("%c", c);
 }
 
 const char ControlCodes[] PROGMEM = "Null\0SOH\0STX\0ETX\0EOT\0ENQ\0ACK\0Bell\0Backspace\0Tab\0Newline\0VT\0"
@@ -4829,7 +4832,7 @@ void pcharacter (uint8_t c, pfun_t pfun) {
   }
 }
 
-void pstring (char *s, pfun_t pfun) {
+void pstring (const char *s, pfun_t pfun) {
   while (*s) pfun(*s++);
 }
 
@@ -4849,7 +4852,7 @@ void printstring (object *form, pfun_t pfun) {
 }
 
 void pfstring (PGM_P s, pfun_t pfun) {
-  pstring((char *) s, pfun);
+  pstring(s, pfun);
 }
 
 void pint (int i, pfun_t pfun) {
@@ -5300,6 +5303,7 @@ static void initgfx () {
 }
 
 static void initenv () {
+  printf("initenv\r\n");
   GlobalEnv = NULL;
   tee = symbol(TEE);
 }
