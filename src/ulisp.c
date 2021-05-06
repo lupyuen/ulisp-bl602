@@ -185,11 +185,7 @@ WIFICONNECT, DRAWPIXEL, DRAWLINE, DRAWRECT, FILLRECT, DRAWCIRCLE, FILLCIRCLE, DR
 FILLROUNDRECT, DRAWTRIANGLE, FILLTRIANGLE, DRAWCHAR, SETCURSOR, SETTEXTCOLOR, SETTEXTSIZE, SETTEXTWRAP,
 FILLSCREEN, SETROTATION, INVERTDISPLAY, KEYWORDS, 
 K_HIGH, K_LOW,
-#if defined(ESP8266)
-K_INPUT, K_INPUT_PULLUP, K_OUTPUT,
-#elif defined(ESP32)
 K_INPUT, K_INPUT_PULLUP, K_INPUT_PULLDOWN, K_OUTPUT,
-#endif
 USERFUNCTIONS, ENDFUNCTIONS };
 
 // Global variables
@@ -1518,20 +1514,12 @@ pfun_t pstreamfun (object *args) {
 // Check pins
 
 void checkanalogread (int pin) {
-#if defined(ESP8266)
-  if (pin!=17) error(ANALOGREAD, PSTR("invalid pin"), number(pin));
-#elif defined(ESP32)
   if (!(pin==0 || pin==2 || pin==4 || (pin>=12 && pin<=15) || (pin>=25 && pin<=27) || (pin>=32 && pin<=36) || pin==39))
     error(ANALOGREAD, PSTR("invalid pin"), number(pin));
-#endif
 }
 
 void checkanalogwrite (int pin) {
-#if defined(ESP8266)
-  if (!(pin>=0 && pin<=16)) error(ANALOGWRITE, PSTR("invalid pin"), number(pin));
-#elif defined(ESP32)
   if (!(pin>=25 && pin<=26)) error(ANALOGWRITE, PSTR("invalid pin"), number(pin));
-#endif
 }
 
 // Note
@@ -3526,7 +3514,14 @@ object *fn_pinmode (object *args, object *env) {
   } else if (arg != nil) { pm = OUTPUT; }
 
   printf("pinMode: pin=%d, pm=%d\r\n", pin, pm);
-  ////pinMode(pin, pm);
+  int rc;
+  switch(pm) {
+    case OUTPUT: rc = bl_gpio_enable_output(pin, 0, 0); assert(rc == 0); break;
+    case INPUT:  rc = bl_gpio_enable_input(pin, 0, 0);  assert(rc == 0); break;
+    case INPUT_PULLUP:   rc = bl_gpio_enable_input(pin, 1, 0); assert(rc == 0); break;
+    case INPUT_PULLDOWN: rc = bl_gpio_enable_input(pin, 0, 1); assert(rc == 0); break;
+    default: printf("Unknown pinMode %d\r\n", pm);
+  }
   return nil;
 }
 
@@ -3549,7 +3544,11 @@ object *fn_digitalwrite (object *args, object *env) {
   else mode = (arg != nil) ? HIGH : LOW;
 
   printf("digitalWrite: pin=%d, mode=%d\r\n", pin, mode);
-  ////digitalWrite(pin, mode);
+  int rc = bl_gpio_output_set(  //  Set the GPIO output (from BL602 GPIO HAL)
+      pin,  //  GPIO pin number
+      mode  //  0 for low, 1 for high
+  );
+  assert(rc == 0);  //  Halt on error
   return arg;
 }
 
@@ -3573,11 +3572,7 @@ object *fn_analogreadresolution (object *args, object *env) {
 #ifdef TODO
   (void) env;
   object *arg = first(args);
-  #if defined(ESP32)
   analogReadResolution(checkinteger(ANALOGREADRESOLUTION, arg));
-  #else
-  error2(ANALOGREADRESOLUTION, PSTR("not supported"));
-  #endif
   return arg;
 #endif  //  TODO
 }
@@ -3594,14 +3589,18 @@ object *fn_analogwrite (object *args, object *env) {
 #endif  //  TODO
 }
 
+/// Delay for specified number of milliseconds
 object *fn_delay (object *args, object *env) {
-  TODO1(fn_delay, nil);
-#ifdef TODO
   (void) env;
   object *arg1 = first(args);
-  delay(checkinteger(DELAY, arg1));
+
+  //  Convert milliseconds to ticks
+  int millisec = checkinteger(DELAY, arg1);
+  uint32_t ticks = time_ms_to_ticks32(millisec);
+
+  //  Sleep for the ticks
+  time_delay(ticks);
   return arg1;
-#endif  //  TODO
 }
 
 object *fn_millis (object *args, object *env) {
