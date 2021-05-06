@@ -37,6 +37,8 @@ const char LispLibrary[] PROGMEM = "";
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h> 
+#include <math.h>
+#include <string.h>
 
 #if defined(gfxsupport)
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -225,6 +227,20 @@ void pserial (char c);
 void pfstring (PGM_P s, pfun_t pfun);
 void pstring (char *s, pfun_t pfun);
 inline void pln (pfun_t pfun);
+inline int maxbuffer (char *buffer);
+uint8_t nthchar (object *string, int n);
+uint8_t getminmax (symbol_t name);
+int listlength (symbol_t name, object *list);
+void checkminmax (symbol_t name, int nargs);
+void pint (int i, pfun_t pfun);
+int gserial ();
+void pintbase (uint32_t i, uint8_t power2, pfun_t pfun);
+int subwidthlist (object *form, int w);
+void supersub (object *form, int lm, int super, pfun_t pfun);
+void prin1object (object *form, pfun_t pfun);
+void printstring (object *form, pfun_t pfun);
+void testescape ();
+int glibrary ();
 
 // BL602 functions
 
@@ -1522,7 +1538,7 @@ const int scale[] PROGMEM = {4186,4435,4699,4978,5274,5588,5920,6272,6645,7040,7
 void playnote (int pin, int note, int octave) {
   int prescaler = 8 - octave - note/12;
   if (prescaler<0 || prescaler>8) error(NOTE, PSTR("octave out of range"), number(prescaler));
-  tone(pin, pgm_read_word(&scale[note%12])>>prescaler);
+  tone(pin, *(&scale[note%12])>>prescaler);
 }
 
 void nonote (int pin) {
@@ -1534,7 +1550,10 @@ void nonote (int pin) {
 void initsleep () { }
 
 void sleep (int secs) {
+  TODO0(sleep);
+#ifdef TODO
   delay(1000 * secs);
+#endif  //  TODO
 }
 
 // Prettyprint
@@ -1601,7 +1620,7 @@ void supersub (object *form, int lm, int super, pfun_t pfun) {
     int name = arg->name;
     if (name == DEFUN) special = 2;
     else for (int i=0; i<ppspecials; i++) {
-      if (name == pgm_read_byte(&ppspecial[i])) { special = 1; break; }
+      if (name == *(&ppspecial[i])) { special = 1; break; }
     } 
   }
   while (form != NULL) {
@@ -1671,9 +1690,11 @@ object *sp_setq (object *args, object *env) {
 }
 
 object *sp_loop (object *args, object *env) {
+  TODO1(sp_loop, nil);
+#ifdef TODO
   object *start = args;
   for (;;) {
-    yield();
+    yield();  ////  TODO
     args = start;
     while (args != NULL) {
       object *result = eval(car(args),env);
@@ -1684,6 +1705,7 @@ object *sp_loop (object *args, object *env) {
       args = cdr(args);
     }
   }
+#endif  //  TODO
 }
 
 object *sp_return (object *args, object *env) {
@@ -1910,6 +1932,8 @@ object *sp_untrace (object *args, object *env) {
 }
 
 object *sp_formillis (object *args, object *env) {
+  TODO1(sp_formillis, nil);
+#ifdef TODO
   if (args == NULL) error2(FORMILLIS, noargument);
   object *param = first(args);
   unsigned long start = millis();
@@ -1922,6 +1946,7 @@ object *sp_formillis (object *args, object *env) {
   } while (now < total);
   if (now <= INT_MAX) return number(now);
   return nil;
+#endif  //  TODO
 }
 
 object *sp_withoutputtostring (object *args, object *env) {
@@ -2729,7 +2754,7 @@ object *fn_abs (object *args, object *env) {
 object *fn_random (object *args, object *env) {
   (void) env;
   object *arg = first(args);
-  if (integerp(arg)) return number(random(arg->integer));
+  if (integerp(arg)) return number(random());
   else if (floatp(arg)) return makefloat((float)rand()/(float)(RAND_MAX/(arg->single_float)));
   else error(RANDOM, notanumber, arg);
   return nil;
@@ -3294,10 +3319,13 @@ object *fn_ash (object *args, object *env) {
 }
 
 object *fn_logbitp (object *args, object *env) {
+  TODO1(fn_logbitp, nil);
+#ifdef TODO
   (void) env;
   int index = checkinteger(LOGBITP, first(args));
   int value = checkinteger(LOGBITP, second(args));
   return (bitRead(value, index) == 1) ? tee : nil;
+#endif  //  TODO
 }
 
 // System functions
@@ -3435,9 +3463,9 @@ object *fn_restarti2c (object *args, object *env) {
 
 object *fn_gc (object *obj, object *env) {
   int initial = Freespace;
-  unsigned long start = micros();
+  unsigned long start = 0;  //// TODO: micros();
   gc(obj, env);
-  unsigned long elapsed = micros() - start;
+  unsigned long elapsed = 0;  //// TODO: micros() - start;
   pfstring(PSTR("Space: "), pserial);
   pint(Freespace - initial, pserial);
   pfstring(PSTR(" bytes, Time: "), pserial);
@@ -4558,7 +4586,7 @@ const tbl_entry_t lookup_table[] PROGMEM = {
 int builtin (char* n) {
   int entry = 0;
   while (entry < ENDFUNCTIONS) {
-    if (strcasecmp_P(n, lookup_table[entry].string) == 0)
+    if (strcasecmp(n, lookup_table[entry].string) == 0)
       return entry;
     entry++;
   }
@@ -4580,11 +4608,11 @@ int longsymbol (char *buffer) {
 }
 
 intptr_t lookupfn (symbol_t name) {
-  return (intptr_t)pgm_read_ptr(&lookup_table[name].fptr);
+  return (intptr_t) lookup_table[name].fptr;
 }
 
 uint8_t getminmax (symbol_t name) {
-  uint8_t minmax = pgm_read_byte(&lookup_table[name].minmax);
+  uint8_t minmax = lookup_table[name].minmax;
   return minmax;
 }
 
@@ -4596,7 +4624,7 @@ void checkminmax (symbol_t name, int nargs) {
 
 char *lookupbuiltin (symbol_t name) {
   char *buffer = SymbolTop;
-  strcpy_P(buffer, lookup_table[name].string);
+  strcpy(buffer, lookup_table[name].string);
   return buffer;
 }
 
@@ -4628,7 +4656,7 @@ void testescape () {
 object *eval (object *form, object *env) {
   int TC=0;
   EVAL:
-  yield(); // Needed on ESP8266 to avoid Soft WDT Reset
+  //// TODO: yield(); // Needed on ESP8266 to avoid Soft WDT Reset
   // Enough space?
   if (Freespace <= WORKSPACESIZE>>4) gc(form, env);
   // Escape
@@ -4792,7 +4820,7 @@ void pcharacter (uint8_t c, pfun_t pfun) {
     pfun('#'); pfun('\\');
     if (c <= 32) {
       PGM_P p = ControlCodes;
-      while (c > 0) {p = p + strlen_P(p) + 1; c--; }
+      while (c > 0) {p = p + strlen(p) + 1; c--; }
       pfstring(p, pfun);
     } else if (c < 127) pfun(c);
     else pint(c, pfun);
@@ -4819,7 +4847,7 @@ void printstring (object *form, pfun_t pfun) {
 }
 
 void pfstring (PGM_P s, pfun_t pfun) {
-  pstring(s, pfun);
+  pstring((char *) s, pfun);
 }
 
 void pint (int i, pfun_t pfun) {
@@ -4956,7 +4984,7 @@ int glibrary () {
     LastChar = 0;
     return temp;
   }
-  char c = pgm_read_byte(&LispLibrary[GlobalStringIndex++]);
+  char c = LispLibrary[GlobalStringIndex++];
   return (c != 0) ? c : -1; // -1?
 }
 
@@ -5075,9 +5103,9 @@ int gserial () {
   WritePtr = 0;
   return '\n';
 #else
-  unsigned long start = millis();
+  ////unsigned long start = millis();
   ////while (!Serial.available()) if (millis() - start > 1000) clrflag(NOECHO);
-  char temp = 'z'; ////Serial.read();
+  char temp = 'z'; //// TODO: Serial.read();
   if (temp != '\n' && !tstflag(NOECHO)) pserial(temp);
   return temp;
 #endif
@@ -5195,8 +5223,8 @@ object *nextitem (gfun_t gfun) {
     if (index == 1) return character(buffer[0]);
     PGM_P p = ControlCodes; char c = 0;
     while (c < 33) {
-      if (strcasecmp_P(buffer, p) == 0) return character(c);
-      p = p + strlen_P(p) + 1; c++;
+      if (strcasecmp(buffer, p) == 0) return character(c);
+      p = p + strlen(p) + 1; c++;
     }
     if (index == 3) return character((buffer[0]*10+buffer[1])*10+buffer[2]-5328);
     error2(0, PSTR("unknown character"));
@@ -5261,7 +5289,7 @@ void initenv () {
 
 void setup () {
   ////Serial.begin(9600);
-  int start = millis();
+  ////int start = millis();
   ////while ((millis() - start) < 5000) { if (Serial) break; }
   initworkspace();
   initenv();
@@ -5274,7 +5302,7 @@ void setup () {
 
 void repl (object *env) {
   for (;;) {
-    randomSeed(micros());
+    //// TODO: randomSeed(micros());
     gc(NULL, env);
     #if defined (printfreespace)
     pint(Freespace, pserial);
@@ -5320,3 +5348,4 @@ void loop () {
   ////client.stop();
   repl(NULL);
 }
+
