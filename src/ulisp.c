@@ -5086,7 +5086,10 @@ void processkey (char c) {
   return;
 }
 
+/// Return the next char from the console input
 int gserial () {
+  TODO1(gserial, '\n');
+#ifdef TODO
   if (LastChar) {
     char temp = LastChar;
     LastChar = 0;
@@ -5109,6 +5112,7 @@ int gserial () {
   if (temp != '\n' && !tstflag(NOECHO)) pserial(temp);
   return temp;
 #endif
+#endif  //  TODO
 }
 
 object *nextitem (gfun_t gfun) {
