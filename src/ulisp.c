@@ -20,7 +20,7 @@ const char LispLibrary[] PROGMEM = "";
 // Compile options
 
 // #define resetautorun
-// #define printfreespace
+#define printfreespace
 // #define printgcs
 // #define sdcardsupport
 // #define gfxsupport
@@ -4812,7 +4812,7 @@ static int maxbuffer (char *buffer) {
 void pserial (char c) {
   LastPrint = c;
   if (c == '\n') { printf("\r\n"); }
-  printf("%c", c);
+  else { printf("%c", c); }
 }
 
 const char ControlCodes[] PROGMEM = "Null\0SOH\0STX\0ETX\0EOT\0ENQ\0ACK\0Bell\0Backspace\0Tab\0Newline\0VT\0"
@@ -5099,9 +5099,11 @@ int input_len = 0;
 int gserial () {
   if (input_pos >= input_len) {
     //  No more chars to read
+    printf("-1 ");
     return -1;
   }
   //  Return next char from the buffer
+  printf("%c ", input_buf[input_pos]);
   return input_buf[input_pos++];
 
 #ifdef TODO
@@ -5352,6 +5354,7 @@ static void loop_ulisp () {
     if (autorun == 12) autorunimage();
   }
   // Come here after error
+  printf("loop_ulisp\r\n");
   ////delay(100); while (Serial.available()) Serial.read();
   clrflag(NOESC); BreakLevel = 0;
   for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
