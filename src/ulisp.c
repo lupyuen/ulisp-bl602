@@ -228,8 +228,8 @@ void pfl (pfun_t pfun);
 void pserial (char c);
 void pfstring (PGM_P s, pfun_t pfun);
 void pstring (char *s, pfun_t pfun);
-inline void pln (pfun_t pfun);
-inline int maxbuffer (char *buffer);
+static void pln (pfun_t pfun);
+static int maxbuffer (char *buffer);
 uint8_t nthchar (object *string, int n);
 uint8_t getminmax (symbol_t name);
 int listlength (symbol_t name, object *list);
@@ -313,7 +313,7 @@ object *myalloc () {
   return temp;
 }
 
-inline void myfree (object *obj) {
+static void myfree (object *obj) {
   car(obj) = NULL;
   cdr(obj) = Freelist;
   Freelist = obj;
@@ -1370,14 +1370,14 @@ void I2Cstop (uint8_t read) {
 
 // Streams
 
-inline int spiread () { 
+static int spiread () { 
   TODO1(spiread, 0);
 #ifdef TODO
   return SPI.transfer(0); 
 #endif  //  TODO
 }
 
-inline int serial1read () { 
+static int serial1read () { 
   TODO1(serial1read, 0);
 #ifdef TODO
   while (!Serial1.available()) testescape(); return Serial1.read(); 
@@ -1386,7 +1386,7 @@ inline int serial1read () {
 
 #if defined(sdcardsupport)
 File SDpfile, SDgfile;
-inline int SDread () {
+static int SDread () {
   if (LastChar) {
     char temp = LastChar;
     LastChar = 0;
@@ -1401,7 +1401,7 @@ WiFiClient client;
 WiFiServer server(80);
 #endif  //  TODO
 
-inline int WiFiread () {
+static int WiFiread () {
   TODO1(WiFiread, 0);
 #ifdef TODO
   if (LastChar) {
@@ -1450,21 +1450,21 @@ gfun_t gstreamfun (object *args) {
   return gfun;
 }
 
-inline void spiwrite (char c) { 
+static void spiwrite (char c) { 
   TODO0(spiwrite);
 #ifdef TODO
   SPI.transfer(c); 
 #endif  //  TODO
 }
 
-inline void serial1write (char c) { 
+static void serial1write (char c) { 
   TODO0(serial1write);
 #ifdef TODO
   Serial1.write(c); 
 #endif  //  TODO
 }
 
-inline void WiFiwrite (char c) { 
+static void WiFiwrite (char c) { 
   TODO0(WiFiwrite);
 #ifdef TODO
   client.write(c); 
@@ -1472,10 +1472,10 @@ inline void WiFiwrite (char c) {
 }
 
 #if defined(sdcardsupport)
-inline void SDwrite (char c) { SDpfile.write(c); }
+static void SDwrite (char c) { SDpfile.write(c); }
 #endif
 #if defined(gfxsupport)
-inline void gfxwrite (char c) { tft.write(c); tft.display(); }
+static void gfxwrite (char c) { tft.write(c); tft.display(); }
 #endif
 
 pfun_t pstreamfun (object *args) {
@@ -4803,7 +4803,7 @@ object *eval (object *form, object *env) {
 
 // Print functions
 
-inline int maxbuffer (char *buffer) {
+static int maxbuffer (char *buffer) {
   return SYMBOLTABLESIZE-(buffer-SymbolTable)-1;
 }
 
@@ -4925,7 +4925,7 @@ void pfloat (float f, pfun_t pfun) {
   }
 }
 
-inline void pln (pfun_t pfun) {
+static void pln (pfun_t pfun) {
   pfun('\n');
 }
 
