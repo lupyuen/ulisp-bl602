@@ -6,13 +6,18 @@
 */
 
 // For BL602
-#define HIGH      1
-#define LOW       0
 #define PGM_P     const char *
 #define PROGMEM
 #define PSTR(s)   s
 #define TODO0(s)     { printf("TODO: " #s "\r\n"); return; }    //  With no return value
 #define TODO1(s, v)  { printf("TODO: " #s "\r\n"); return v; }  //  With return value
+
+#define LOW             0
+#define HIGH            1
+#define INPUT           2
+#define INPUT_PULLUP    3
+#define INPUT_PULLDOWN  4
+#define OUTPUT          5
 
 // Lisp Library
 const char LispLibrary[] PROGMEM = "";
@@ -40,6 +45,8 @@ const char LispLibrary[] PROGMEM = "";
 #include <math.h>
 #include <string.h>
 #include <assert.h>
+#include <bl_gpio.h>     //  For BL602 GPIO Hardware Abstraction Layer
+#include "nimble_npl.h"  //  For NimBLE Porting Layer (mulitasking functions)
 #include "ulisp.h"
 
 #define putchar(c)   printf("%c", c)  //  putchar doesn't work on BL602
@@ -3503,23 +3510,24 @@ object *fn_cls (object *args, object *env) {
 // Arduino procedures
 
 object *fn_pinmode (object *args, object *env) {
-  TODO1(fn_pinmode, nil);
-#ifdef TODO
   (void) env;
   int pin = checkinteger(PINMODE, first(args));
   PinMode pm = INPUT;
   object *arg = second(args);
-  if (keywordp(arg)) pm = (PinMode)checkkeyword(PINMODE, arg);
-  else if (integerp(arg)) {
+  if (keywordp(arg)) {
+    pm = (PinMode)checkkeyword(PINMODE, arg);
+  } else if (integerp(arg)) {
     int mode = arg->integer;
-    if (mode == 1) pm = OUTPUT; else if (mode == 2) pm = INPUT_PULLUP;
+    if (mode == 1) { pm = OUTPUT; }
+    else if (mode == 2) { pm = INPUT_PULLUP; }
     #if defined(INPUT_PULLDOWN)
-    else if (mode == 4) pm = INPUT_PULLDOWN;
+    else if (mode == 4) { pm = INPUT_PULLDOWN; }
     #endif
-  } else if (arg != nil) pm = OUTPUT;
-  pinMode(pin, pm);
+  } else if (arg != nil) { pm = OUTPUT; }
+
+  printf("pinMode: pin=%d, pm=%d\r\n", pin, pm);
+  ////pinMode(pin, pm);
   return nil;
-#endif  //  TODO
 }
 
 object *fn_digitalread (object *args, object *env) {
@@ -3532,8 +3540,6 @@ object *fn_digitalread (object *args, object *env) {
 }
 
 object *fn_digitalwrite (object *args, object *env) {
-  TODO1(fn_digitalwrite, nil);
-#ifdef TODO
   (void) env;
   int pin = checkinteger(DIGITALWRITE, first(args));
   object *arg = second(args);
@@ -3541,9 +3547,10 @@ object *fn_digitalwrite (object *args, object *env) {
   if (keywordp(arg)) mode = checkkeyword(DIGITALWRITE, arg);
   else if (integerp(arg)) mode = arg->integer ? HIGH : LOW;
   else mode = (arg != nil) ? HIGH : LOW;
-  digitalWrite(pin, mode);
+
+  printf("digitalWrite: pin=%d, mode=%d\r\n", pin, mode);
+  ////digitalWrite(pin, mode);
   return arg;
-#endif  //  TODO
 }
 
 object *fn_analogread (object *args, object *env) {
@@ -4332,18 +4339,11 @@ const char string215[] PROGMEM = "invert-display";
 const char string216[] PROGMEM = "";
 const char string217[] PROGMEM = ":high";
 const char string218[] PROGMEM = ":low";
-#if defined(ESP8266)
-const char string219[] PROGMEM = ":input";
-const char string220[] PROGMEM = ":input-pullup";
-const char string221[] PROGMEM = ":output";
-const char string222[] PROGMEM = "";
-#elif defined(ESP32)
 const char string219[] PROGMEM = ":input";
 const char string220[] PROGMEM = ":input-pullup";
 const char string221[] PROGMEM = ":input-pulldown";
 const char string222[] PROGMEM = ":output";
 const char string223[] PROGMEM = "";
-#endif
 
 // Insert your own function names here
 
@@ -4568,18 +4568,11 @@ const tbl_entry_t lookup_table[] PROGMEM = {
   { string216, NULL, 0x00 },
   { string217, (fn_ptr_type)HIGH, DIGITALWRITE },
   { string218, (fn_ptr_type)LOW, DIGITALWRITE },
-#if defined(ESP8266)
-  { string219, (fn_ptr_type)INPUT, PINMODE },
-  { string220, (fn_ptr_type)INPUT_PULLUP, PINMODE },
-  { string221, (fn_ptr_type)OUTPUT, PINMODE },
-  { string222, NULL, 0x00 },
-#elif defined(ESP32)
   { string219, (fn_ptr_type)INPUT, PINMODE },
   { string220, (fn_ptr_type)INPUT_PULLUP, PINMODE },
   { string221, (fn_ptr_type)INPUT_PULLDOWN, PINMODE },
   { string222, (fn_ptr_type)OUTPUT, PINMODE },
   { string223, NULL, 0x00 },
-#endif
 
 // Insert your own table entries here
 
