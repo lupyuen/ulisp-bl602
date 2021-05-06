@@ -214,7 +214,7 @@ object *tee;
 object *tf_progn (object *form, object *env);
 object *eval (object *form, object *env);
 object *read (gfun_t gfun);
-void repl (object *env);
+static  void repl (object *env);
 void printobject (object *form, pfun_t pfun);
 char *lookupbuiltin (symbol_t name);
 intptr_t lookupfn (symbol_t name);
@@ -5290,7 +5290,7 @@ object *read (gfun_t gfun) {
 
 // Setup
 
-void initgfx () {
+static void initgfx () {
 #if defined(gfxsupport)
   Wire.begin();
   tft.begin(SSD1306_SWITCHCAPVCC, 0x3C);
@@ -5299,7 +5299,7 @@ void initgfx () {
 #endif
 }
 
-void initenv () {
+static void initenv () {
   GlobalEnv = NULL;
   tee = symbol(TEE);
 }
@@ -5315,7 +5315,7 @@ void setup_ulisp () {
 
 // Read/Evaluate/Print loop
 
-void repl (object *env) {
+static void repl (object *env) {
   // We loop only once
   //// TODO: randomSeed(micros());
   gc(NULL, env);
@@ -5340,7 +5340,7 @@ void repl (object *env) {
   pln(pserial);
 }
 
-void loop () {
+static void loop_ulisp () {
   if (!setjmp(exception)) {
     #if defined(resetautorun)
     volatile int autorun = 12; // Fudge to keep code size the same
@@ -5366,19 +5366,8 @@ void loop () {
 /// Execute the command line
 void execute_ulisp(const char *line) {
   assert(line != NULL);
-
-  clrflag(NOESC); BreakLevel = 0;
-  for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
-  #if defined(sdcardsupport)
-  SDpfile.close(); SDgfile.close();
-  #endif
-  #if defined(lisplibrary)
-  if (!tstflag(LIBRARYLOADED)) { setflag(LIBRARYLOADED); loadfromlibrary(NULL); }
-  #endif
-  ////client.stop();
-
   input_buf = line;
   input_pos = 0;
   input_len = strlen(line);
-  repl(NULL);
+  loop_ulisp();
 }
