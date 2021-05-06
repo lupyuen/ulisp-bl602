@@ -1689,11 +1689,9 @@ object *sp_setq (object *args, object *env) {
 }
 
 object *sp_loop (object *args, object *env) {
-  TODO1(sp_loop, nil);
-#ifdef TODO
   object *start = args;
   for (;;) {
-    yield();  ////  TODO
+    time_delay(100);
     args = start;
     while (args != NULL) {
       object *result = eval(car(args),env);
@@ -1704,7 +1702,6 @@ object *sp_loop (object *args, object *env) {
       args = cdr(args);
     }
   }
-#endif  //  TODO
 }
 
 object *sp_return (object *args, object *env) {
@@ -3513,7 +3510,6 @@ object *fn_pinmode (object *args, object *env) {
     #endif
   } else if (arg != nil) { pm = OUTPUT; }
 
-  printf("pinMode: pin=%d, pm=%d\r\n", pin, pm);
   int rc;
   switch(pm) {
     case OUTPUT: rc = bl_gpio_enable_output(pin, 0, 0); assert(rc == 0); break;
@@ -3543,7 +3539,6 @@ object *fn_digitalwrite (object *args, object *env) {
   else if (integerp(arg)) mode = arg->integer ? HIGH : LOW;
   else mode = (arg != nil) ? HIGH : LOW;
 
-  printf("digitalWrite: pin=%d, mode=%d\r\n", pin, mode);
   int rc = bl_gpio_output_set(  //  Set the GPIO output (from BL602 GPIO HAL)
       pin,  //  GPIO pin number
       mode  //  0 for low, 1 for high
