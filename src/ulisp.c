@@ -20,7 +20,7 @@ const char LispLibrary[] PROGMEM = "";
 // Compile options
 
 // #define resetautorun
-#define printfreespace
+// #define printfreespace
 // #define printgcs
 // #define sdcardsupport
 // #define gfxsupport
@@ -5099,7 +5099,7 @@ int input_len = 0;
 int gserial () {
   if (input_pos >= input_len) {
     //  No more chars to read
-    return '\n';
+    return -1;
   }
   //  Return next char from the buffer
   return input_buf[input_pos++];
