@@ -39,6 +39,8 @@ const char LispLibrary[] PROGMEM = "";
 #include <stdbool.h> 
 #include <math.h>
 #include <string.h>
+#include <assert.h>
+#include "ulisp.h"
 
 #if defined(gfxsupport)
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -4807,7 +4809,7 @@ inline int maxbuffer (char *buffer) {
 
 void pserial (char c) {
   LastPrint = c;
-  if (c == '\n') putchar('\r');
+  if (c == '\n') { printf("\r\n"); }
   putchar(c);
 }
 
@@ -5086,9 +5088,20 @@ void processkey (char c) {
   return;
 }
 
+/// Console input buffer, position and length
+const char *input_buf = NULL;
+int input_pos = 0;
+int input_len = 0;
+
 /// Return the next char from the console input
 int gserial () {
-  TODO1(gserial, '\n');
+  if (input_pos >= input_len) {
+    //  No more chars to read
+    return '\n';
+  }
+  //  Return next char from the buffer
+  return input_buf[input_pos++];
+
 #ifdef TODO
   if (LastChar) {
     char temp = LastChar;
@@ -5291,10 +5304,8 @@ void initenv () {
   tee = symbol(TEE);
 }
 
+/// Setup uLisp environment
 void setup () {
-  ////Serial.begin(9600);
-  ////int start = millis();
-  ////while ((millis() - start) < 5000) { if (Serial) break; }
   initworkspace();
   initenv();
   initsleep();
@@ -5305,29 +5316,28 @@ void setup () {
 // Read/Evaluate/Print loop
 
 void repl (object *env) {
-  for (;;) {
-    //// TODO: randomSeed(micros());
-    gc(NULL, env);
-    #if defined (printfreespace)
-    pint(Freespace, pserial);
-    #endif
-    if (BreakLevel) {
-      pfstring(PSTR(" : "), pserial);
-      pint(BreakLevel, pserial);
-    }
-    pserial('>'); pserial(' ');
-    object *line = read(gserial);
-    if (BreakLevel && line == nil) { pln(pserial); return; }
-    if (line == (object *)KET) error2(0, PSTR("unmatched right bracket"));
-    push(line, GCStack);
-    pfl(pserial);
-    line = eval(line, env);
-    pfl(pserial);
-    printobject(line, pserial);
-    pop(GCStack);
-    pfl(pserial);
-    pln(pserial);
+  // We loop only once
+  //// TODO: randomSeed(micros());
+  gc(NULL, env);
+  #if defined (printfreespace)
+  pint(Freespace, pserial);
+  #endif
+  if (BreakLevel) {
+    pfstring(PSTR(" : "), pserial);
+    pint(BreakLevel, pserial);
   }
+  pserial('>'); pserial(' ');
+  object *line = read(gserial);
+  if (BreakLevel && line == nil) { pln(pserial); return; }
+  if (line == (object *)KET) error2(0, PSTR("unmatched right bracket"));
+  push(line, GCStack);
+  pfl(pserial);
+  line = eval(line, env);
+  pfl(pserial);
+  printobject(line, pserial);
+  pop(GCStack);
+  pfl(pserial);
+  pln(pserial);
 }
 
 void loop () {
@@ -5353,3 +5363,22 @@ void loop () {
   repl(NULL);
 }
 
+/// Execute the command line
+void execute(const char *line) {
+  assert(line != NULL);
+
+  clrflag(NOESC); BreakLevel = 0;
+  for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
+  #if defined(sdcardsupport)
+  SDpfile.close(); SDgfile.close();
+  #endif
+  #if defined(lisplibrary)
+  if (!tstflag(LIBRARYLOADED)) { setflag(LIBRARYLOADED); loadfromlibrary(NULL); }
+  #endif
+  ////client.stop();
+
+  input_buf = line;
+  input_pos = 0;
+  input_len = strlen(line);
+  repl(NULL);
+}
