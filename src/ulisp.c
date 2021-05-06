@@ -220,6 +220,11 @@ object *apply (symbol_t name, object *function, object *args, object *env);
 char *lookupsymbol (symbol_t name);
 char *cstring (object *form, char *buffer, int buflen);
 object *edit (object *fun);
+void pfl (pfun_t pfun);
+void pserial (char c);
+void pfstring (PGM_P s, pfun_t pfun);
+void pstring (char *s, pfun_t pfun);
+inline void pln (pfun_t pfun);
 
 // BL602 functions
 
