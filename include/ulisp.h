@@ -2,9 +2,9 @@
 #define ULISP_H
 
 /// Setup uLisp environment
-void setup();
+void setup_ulisp();
 
 /// Execute the command line
-void execute(const char *line);
+void execute_ulisp(const char *line);
 
 #endif  //  ULISP_H

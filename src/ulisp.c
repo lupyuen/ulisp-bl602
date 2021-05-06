@@ -5305,7 +5305,7 @@ void initenv () {
 }
 
 /// Setup uLisp environment
-void setup () {
+void setup_ulisp () {
   initworkspace();
   initenv();
   initsleep();
@@ -5364,7 +5364,7 @@ void loop () {
 }
 
 /// Execute the command line
-void execute(const char *line) {
+void execute_ulisp(const char *line) {
   assert(line != NULL);
 
   clrflag(NOESC); BreakLevel = 0;
