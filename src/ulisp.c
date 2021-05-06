@@ -488,7 +488,7 @@ void EpromWriteInt(int *addr, uintptr_t data) {
 #endif
 
 unsigned int saveimage (object *arg) {
-  TODO0(saveimage);
+  TODO1(saveimage, 0);
 #ifdef TODO
   unsigned int imagesize = compactimage(&arg);
 #if defined(sdcardsupport)
@@ -548,7 +548,7 @@ int SDReadInt (File file) {
 }
 #else
 int EpromReadInt (int *addr) {
-  TODO0(EpromReadInt);
+  TODO1(EpromReadInt, 0);
 #ifdef TODO
   uint8_t b0 = EEPROM.read((*addr)++); uint8_t b1 = EEPROM.read((*addr)++);
   uint8_t b2 = EEPROM.read((*addr)++); uint8_t b3 = EEPROM.read((*addr)++);
@@ -558,7 +558,7 @@ int EpromReadInt (int *addr) {
 #endif
 
 unsigned int loadimage (object *arg) {
-  TODO0(loadimage);
+  TODO1(loadimage, 0);
 #ifdef TODO
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
@@ -1301,7 +1301,7 @@ void I2Cinit (bool enablePullup) {
 }
 
 int I2Cread () {
-  TODO0(I2Cread);
+  TODO1(I2Cread, 0);
 #ifdef TODO
   return Wire.read();
 #endif  //  TODO
@@ -1315,7 +1315,7 @@ void I2Cwrite (uint8_t data) {
 }
 
 bool I2Cstart (uint8_t address, uint8_t read) {
- TODO0(I2Cstart);
+ TODO1(I2Cstart, true);
 #ifdef TODO
  int ok = true;
  if (read == 0) {
@@ -1329,7 +1329,7 @@ bool I2Cstart (uint8_t address, uint8_t read) {
 }
 
 bool I2Crestart (uint8_t address, uint8_t read) {
-  TODO0(I2Crestart);
+  TODO1(I2Crestart, true);
 #ifdef TODO
   int error = (Wire.endTransmission(false) != 0);
   if (read == 0) Wire.beginTransmission(address);
@@ -1348,14 +1348,14 @@ void I2Cstop (uint8_t read) {
 // Streams
 
 inline int spiread () { 
-  TODO0(spiread);
+  TODO1(spiread, 0);
 #ifdef TODO
   return SPI.transfer(0); 
 #endif  //  TODO
 }
 
 inline int serial1read () { 
-  TODO0(serial1read);
+  TODO1(serial1read, 0);
 #ifdef TODO
   while (!Serial1.available()) testescape(); return Serial1.read(); 
 #endif  //  TODO
@@ -1379,7 +1379,7 @@ WiFiServer server(80);
 #endif  //  TODO
 
 inline int WiFiread () {
-  TODO0(WiFiread);
+  TODO1(WiFiread, 0);
 #ifdef TODO
   if (LastChar) {
     char temp = LastChar;
@@ -1975,7 +1975,7 @@ object *sp_withi2c (object *args, object *env) {
 }
 
 object *sp_withspi (object *args, object *env) {
-  TODO0(sp_withspi);
+  TODO1(sp_withspi, nil);
 #ifdef TODO
   object *params = first(args);
   if (params == NULL) error2(WITHSPI, nostream);
@@ -2061,7 +2061,7 @@ object *sp_withgfx (object *args, object *env) {
 }
 
 object *sp_withclient (object *args, object *env) {
-  TODO0(sp_withclient);
+  TODO1(sp_withclient, nil);
 #ifdef TODO
   object *params = first(args);
   object *var = first(params);
@@ -3466,7 +3466,7 @@ object *fn_cls (object *args, object *env) {
 // Arduino procedures
 
 object *fn_pinmode (object *args, object *env) {
-  TODO0(fn_pinmode);
+  TODO1(fn_pinmode, nil);
 #ifdef TODO
   (void) env;
   int pin = checkinteger(PINMODE, first(args));
@@ -3486,7 +3486,7 @@ object *fn_pinmode (object *args, object *env) {
 }
 
 object *fn_digitalread (object *args, object *env) {
-  TODO0(fn_digitalread);
+  TODO1(fn_digitalread, nil);
 #ifdef TODO
   (void) env;
   int pin = checkinteger(DIGITALREAD, first(args));
@@ -3495,7 +3495,7 @@ object *fn_digitalread (object *args, object *env) {
 }
 
 object *fn_digitalwrite (object *args, object *env) {
-  TODO0(fn_digitalwrite);
+  TODO1(fn_digitalwrite, nil);
 #ifdef TODO
   (void) env;
   int pin = checkinteger(DIGITALWRITE, first(args));
@@ -3510,7 +3510,7 @@ object *fn_digitalwrite (object *args, object *env) {
 }
 
 object *fn_analogread (object *args, object *env) {
-  TODO0(fn_analogread);
+  TODO1(fn_analogread, nil);
 #ifdef TODO
   (void) env;
   int pin;
@@ -3525,7 +3525,7 @@ object *fn_analogread (object *args, object *env) {
 }
 
 object *fn_analogreadresolution (object *args, object *env) {
-  TODO0(fn_analogreadresolution);
+  TODO1(fn_analogreadresolution, nil);
 #ifdef TODO
   (void) env;
   object *arg = first(args);
@@ -3539,7 +3539,7 @@ object *fn_analogreadresolution (object *args, object *env) {
 }
 
 object *fn_analogwrite (object *args, object *env) {
-  TODO0(fn_analogwrite);
+  TODO1(fn_analogwrite, nil);
 #ifdef TODO
   (void) env;
   int pin = checkinteger(ANALOGWRITE, first(args));
@@ -3551,7 +3551,7 @@ object *fn_analogwrite (object *args, object *env) {
 }
 
 object *fn_delay (object *args, object *env) {
-  TODO0(fn_delay);
+  TODO1(fn_delay, nil);
 #ifdef TODO
   (void) env;
   object *arg1 = first(args);
@@ -3561,7 +3561,7 @@ object *fn_delay (object *args, object *env) {
 }
 
 object *fn_millis (object *args, object *env) {
-  TODO0(xxxfn_millisxx);
+  TODO1(xxxfn_millisxx, nil);
 #ifdef TODO
   (void) args, (void) env;
   return number(millis());
@@ -3569,7 +3569,7 @@ object *fn_millis (object *args, object *env) {
 }
 
 object *fn_sleep (object *args, object *env) {
-  TODO0(fn_sleep);
+  TODO1(fn_sleep, nil);
 #ifdef TODO
   (void) env;
   object *arg1 = first(args);
@@ -3579,7 +3579,7 @@ object *fn_sleep (object *args, object *env) {
 }
 
 object *fn_note (object *args, object *env) {
-  TODO0(fn_note);
+  TODO1(fn_note, nil);
 #ifdef TODO
   (void) env;
   static int pin = 255;
@@ -3794,7 +3794,7 @@ object *fn_listlibrary (object *args, object *env) {
 // Wi-fi
 
 object *fn_available (object *args, object *env) {
-  TODO0(fn_available);
+  TODO1(fn_available, nil);
 #ifdef TODO
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(AVAILABLE, PSTR("invalid stream"));
@@ -3803,7 +3803,7 @@ object *fn_available (object *args, object *env) {
 }
 
 object *fn_wifiserver (object *args, object *env) {
-  TODO0(fn_wifiserver);
+  TODO1(fn_wifiserver, nil);
 #ifdef TODO
   (void) args, (void) env;
   server.begin();
@@ -3812,7 +3812,7 @@ object *fn_wifiserver (object *args, object *env) {
 }
 
 object *fn_wifisoftap (object *args, object *env) {
-  TODO0(fn_wifisoftap);
+  TODO1(fn_wifisoftap, nil);
 #ifdef TODO
   (void) env;
   char ssid[33], pass[65];
@@ -3836,7 +3836,7 @@ object *fn_wifisoftap (object *args, object *env) {
 }
 
 object *fn_connected (object *args, object *env) {
-  TODO0(fn_connected);
+  TODO1(fn_connected, nil);
 #ifdef TODO
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(CONNECTED, PSTR("invalid stream"));
@@ -3845,7 +3845,7 @@ object *fn_connected (object *args, object *env) {
 }
 
 object *fn_wifilocalip (object *args, object *env) {
-  TODO0(fn_wifilocalip);
+  TODO1(fn_wifilocalip, nil);
 #ifdef TODO
   (void) args, (void) env;
   return lispstring((char*)WiFi.localIP().toString().c_str());
@@ -3853,7 +3853,7 @@ object *fn_wifilocalip (object *args, object *env) {
 }
 
 object *fn_wificonnect (object *args, object *env) {
-  TODO0(fn_wificonnect);
+  TODO1(fn_wificonnect, nil);
 #ifdef TODO
   (void) env;
   char ssid[33], pass[65];
