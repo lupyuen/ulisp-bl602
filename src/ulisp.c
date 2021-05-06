@@ -20,7 +20,7 @@ const char LispLibrary[] PROGMEM = "";
 // Compile options
 
 // #define resetautorun
-#define printfreespace
+// #define printfreespace
 // #define printgcs
 // #define sdcardsupport
 // #define gfxsupport
@@ -3467,7 +3467,7 @@ object *fn_restarti2c (object *args, object *env) {
 
 object *fn_gc (object *obj, object *env) {
   int initial = Freespace;
-  unsigned long start = 0;  //// TODO: micros();
+  ////unsigned long start = 0;  //// TODO: micros();
   gc(obj, env);
   unsigned long elapsed = 0;  //// TODO: micros() - start;
   pfstring(PSTR("Space: "), pserial);
@@ -4649,7 +4649,6 @@ void deletesymbol (symbol_t name) {
 }
 
 void testescape () {
-  TODO0(testescape);
 #ifdef TODO
   if (Serial.read() == '~') error2(0, PSTR("escape!"));
 #endif  //  TODO
@@ -5097,21 +5096,20 @@ int input_len = 0;
 
 /// Return the next char from the console input
 int gserial () {
-  if (input_pos >= input_len) {
-    //  No more chars to read
-    printf("-1 ");
-    return -1;
-  }
-  //  Return next char from the buffer
-  printf("%c ", input_buf[input_pos]);
-  return input_buf[input_pos++];
-
-#ifdef TODO
   if (LastChar) {
+    //  Return the last char
     char temp = LastChar;
     LastChar = 0;
     return temp;
+  }  
+  if (input_pos >= input_len) {
+    //  No more chars to read
+    return '\n';
   }
+  //  Return next char from the buffer
+  return input_buf[input_pos++];
+
+#ifdef TODO
 #if defined(lineeditor)
   while (!KybdAvailable) {
     while (!Serial.available());
