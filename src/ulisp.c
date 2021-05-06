@@ -11,7 +11,8 @@
 #define PGM_P     const char *
 #define PROGMEM
 #define PSTR(s)   s
-#define TODO(s)   printf("TODO: " #s "\r\n")
+#define TODO0(s)     { printf("TODO: " #s "\r\n"); return; }    //  With no return value
+#define TODO1(s, v)  { printf("TODO: " #s "\r\n"); return v; }  //  With return value
 
 // Lisp Library
 const char LispLibrary[] PROGMEM = "";
@@ -478,17 +479,17 @@ void SDWriteInt (File file, int data) {
 }
 #else
 void EpromWriteInt(int *addr, uintptr_t data) {
-  TODO(EpromWriteInt);
-#ifdef TODO0
+  TODO0(EpromWriteInt);
+#ifdef TODO
   EEPROM.write((*addr)++, data & 0xFF); EEPROM.write((*addr)++, data>>8 & 0xFF);
   EEPROM.write((*addr)++, data>>16 & 0xFF); EEPROM.write((*addr)++, data>>24 & 0xFF);
-#endif  //  TODO0
+#endif  //  TODO
 }
 #endif
 
 unsigned int saveimage (object *arg) {
-  TODO(saveimage);
-#ifdef TODO0
+  TODO0(saveimage);
+#ifdef TODO
   unsigned int imagesize = compactimage(&arg);
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
@@ -536,7 +537,7 @@ unsigned int saveimage (object *arg) {
   EEPROM.commit();
   return imagesize;
 #endif
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 #if defined(sdcardsupport)
@@ -547,18 +548,18 @@ int SDReadInt (File file) {
 }
 #else
 int EpromReadInt (int *addr) {
-  TODO(EpromReadInt);
-#ifdef TODO0
+  TODO0(EpromReadInt);
+#ifdef TODO
   uint8_t b0 = EEPROM.read((*addr)++); uint8_t b1 = EEPROM.read((*addr)++);
   uint8_t b2 = EEPROM.read((*addr)++); uint8_t b3 = EEPROM.read((*addr)++);
   return b0 | b1<<8 | b2<<16 | b3<<24;
-#endif  //  TODO0
+#endif  //  TODO
 }
 #endif
 
 unsigned int loadimage (object *arg) {
-  TODO(loadimage);
-#ifdef TODO0
+  TODO0(loadimage);
+#ifdef TODO
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
   File file;
@@ -602,12 +603,12 @@ unsigned int loadimage (object *arg) {
   gc(NULL, NULL);
   return imagesize;
 #endif
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 void autorunimage () {
-  TODO(autorunimage);
-#ifdef TODO0
+  TODO0(autorunimage);
+#ifdef TODO
 #if defined(sdcardsupport)
   SD.begin(SDCARD_SS_PIN);
   File file = SD.open("/ULISP.IMG");
@@ -627,7 +628,7 @@ void autorunimage () {
     apply(0, autorun, NULL, NULL);
   }
 #endif
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Tracing
@@ -1292,30 +1293,30 @@ object *cdrx (object *arg) {
 // I2C interface
 
 void I2Cinit (bool enablePullup) {
-  TODO(I2Cinit);
-#ifdef TODO0
+  TODO0(I2Cinit);
+#ifdef TODO
   (void) enablePullup;
   Wire.begin();
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 int I2Cread () {
-  TODO(I2Cread);
-#ifdef TODO0
+  TODO0(I2Cread);
+#ifdef TODO
   return Wire.read();
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 void I2Cwrite (uint8_t data) {
-  TODO(I2Cwrite);
-#ifdef TODO0
+  TODO0(I2Cwrite);
+#ifdef TODO
   Wire.write(data);
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 bool I2Cstart (uint8_t address, uint8_t read) {
- TODO(I2Cstart);
-#ifdef TODO0
+ TODO0(I2Cstart);
+#ifdef TODO
  int ok = true;
  if (read == 0) {
    Wire.beginTransmission(address);
@@ -1324,40 +1325,40 @@ bool I2Cstart (uint8_t address, uint8_t read) {
  }
  else Wire.requestFrom(address, I2CCount);
  return ok;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 bool I2Crestart (uint8_t address, uint8_t read) {
-  TODO(I2Crestart);
-#ifdef TODO0
+  TODO0(I2Crestart);
+#ifdef TODO
   int error = (Wire.endTransmission(false) != 0);
   if (read == 0) Wire.beginTransmission(address);
   else Wire.requestFrom(address, I2CCount);
   return error ? false : true;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 void I2Cstop (uint8_t read) {
-  TODO(I2Cstop);
-#ifdef TODO0
+  TODO0(I2Cstop);
+#ifdef TODO
   if (read == 0) Wire.endTransmission(); // Check for error?
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Streams
 
 inline int spiread () { 
-  TODO(spiread);
-#ifdef TODO0
+  TODO0(spiread);
+#ifdef TODO
   return SPI.transfer(0); 
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 inline int serial1read () { 
-  TODO(serial1read);
-#ifdef TODO0
+  TODO0(serial1read);
+#ifdef TODO
   while (!Serial1.available()) testescape(); return Serial1.read(); 
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 #if defined(sdcardsupport)
@@ -1372,36 +1373,36 @@ inline int SDread () {
 }
 #endif
 
-#ifdef TODO0
+#ifdef TODO
 WiFiClient client;
 WiFiServer server(80);
-#endif  //  TODO0
+#endif  //  TODO
 
 inline int WiFiread () {
-  TODO(WiFiread);
-#ifdef TODO0
+  TODO0(WiFiread);
+#ifdef TODO
   if (LastChar) {
     char temp = LastChar;
     LastChar = 0;
     return temp;
   }
   return client.read();
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 void serialbegin (int address, int baud) {
-  TODO(serialbegin);
-#ifdef TODO0
+  TODO0(serialbegin);
+#ifdef TODO
   if (address == 1) Serial1.begin((long)baud*100);
   else error(WITHSERIAL, PSTR("port not supported"), number(address));
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 void serialend (int address) {
-  TODO(serialend);
-#ifdef TODO0
+  TODO0(serialend);
+#ifdef TODO
   if (address == 1) {Serial1.flush(); Serial1.end(); }
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 gfun_t gstreamfun (object *args) {
@@ -1427,24 +1428,24 @@ gfun_t gstreamfun (object *args) {
 }
 
 inline void spiwrite (char c) { 
-  TODO(spiwrite);
-#ifdef TODO0
+  TODO0(spiwrite);
+#ifdef TODO
   SPI.transfer(c); 
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 inline void serial1write (char c) { 
-  TODO(serial1write);
-#ifdef TODO0
+  TODO0(serial1write);
+#ifdef TODO
   Serial1.write(c); 
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 inline void WiFiwrite (char c) { 
-  TODO(WiFiwrite);
-#ifdef TODO0
+  TODO0(WiFiwrite);
+#ifdef TODO
   client.write(c); 
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 #if defined(sdcardsupport)
@@ -1974,8 +1975,8 @@ object *sp_withi2c (object *args, object *env) {
 }
 
 object *sp_withspi (object *args, object *env) {
-  TODO(sp_withspi);
-#ifdef TODO0
+  TODO0(sp_withspi);
+#ifdef TODO
   object *params = first(args);
   if (params == NULL) error2(WITHSPI, nostream);
   object *var = first(params);
@@ -2009,7 +2010,7 @@ object *sp_withspi (object *args, object *env) {
   digitalWrite(pin, HIGH);
   SPI.endTransaction();
   return result;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *sp_withsdcard (object *args, object *env) {
@@ -2060,8 +2061,8 @@ object *sp_withgfx (object *args, object *env) {
 }
 
 object *sp_withclient (object *args, object *env) {
-  TODO(sp_withclient);
-#ifdef TODO0
+  TODO0(sp_withclient);
+#ifdef TODO
   object *params = first(args);
   object *var = first(params);
   params = cdr(params);
@@ -2086,7 +2087,7 @@ object *sp_withclient (object *args, object *env) {
   object *result = eval(tf_progn(forms,env), env);
   client.stop();
   return result;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Tail-recursive forms
@@ -3465,8 +3466,8 @@ object *fn_cls (object *args, object *env) {
 // Arduino procedures
 
 object *fn_pinmode (object *args, object *env) {
-  TODO(fn_pinmode);
-#ifdef TODO0
+  TODO0(fn_pinmode);
+#ifdef TODO
   (void) env;
   int pin = checkinteger(PINMODE, first(args));
   PinMode pm = INPUT;
@@ -3481,21 +3482,21 @@ object *fn_pinmode (object *args, object *env) {
   } else if (arg != nil) pm = OUTPUT;
   pinMode(pin, pm);
   return nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_digitalread (object *args, object *env) {
-  TODO(fn_digitalread);
-#ifdef TODO0
+  TODO0(fn_digitalread);
+#ifdef TODO
   (void) env;
   int pin = checkinteger(DIGITALREAD, first(args));
   if (digitalRead(pin) != 0) return tee; else return nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_digitalwrite (object *args, object *env) {
-  TODO(fn_digitalwrite);
-#ifdef TODO0
+  TODO0(fn_digitalwrite);
+#ifdef TODO
   (void) env;
   int pin = checkinteger(DIGITALWRITE, first(args));
   object *arg = second(args);
@@ -3505,12 +3506,12 @@ object *fn_digitalwrite (object *args, object *env) {
   else mode = (arg != nil) ? HIGH : LOW;
   digitalWrite(pin, mode);
   return arg;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_analogread (object *args, object *env) {
-  TODO(fn_analogread);
-#ifdef TODO0
+  TODO0(fn_analogread);
+#ifdef TODO
   (void) env;
   int pin;
   object *arg = first(args);
@@ -3520,12 +3521,12 @@ object *fn_analogread (object *args, object *env) {
     checkanalogread(pin);
   }
   return number(analogRead(pin));
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_analogreadresolution (object *args, object *env) {
-  TODO(fn_analogreadresolution);
-#ifdef TODO0
+  TODO0(fn_analogreadresolution);
+#ifdef TODO
   (void) env;
   object *arg = first(args);
   #if defined(ESP32)
@@ -3534,52 +3535,52 @@ object *fn_analogreadresolution (object *args, object *env) {
   error2(ANALOGREADRESOLUTION, PSTR("not supported"));
   #endif
   return arg;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_analogwrite (object *args, object *env) {
-  TODO(fn_analogwrite);
-#ifdef TODO0
+  TODO0(fn_analogwrite);
+#ifdef TODO
   (void) env;
   int pin = checkinteger(ANALOGWRITE, first(args));
   checkanalogwrite(pin);
   object *value = second(args);
   analogWrite(pin, checkinteger(ANALOGWRITE, value));
   return value;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_delay (object *args, object *env) {
-  TODO(fn_delay);
-#ifdef TODO0
+  TODO0(fn_delay);
+#ifdef TODO
   (void) env;
   object *arg1 = first(args);
   delay(checkinteger(DELAY, arg1));
   return arg1;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_millis (object *args, object *env) {
-  TODO(xxxfn_millisxx);
-#ifdef TODO0
+  TODO0(xxxfn_millisxx);
+#ifdef TODO
   (void) args, (void) env;
   return number(millis());
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_sleep (object *args, object *env) {
-  TODO(fn_sleep);
-#ifdef TODO0
+  TODO0(fn_sleep);
+#ifdef TODO
   (void) env;
   object *arg1 = first(args);
   sleep(checkinteger(SLEEP, arg1));
   return arg1;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_note (object *args, object *env) {
-  TODO(fn_note);
-#ifdef TODO0
+  TODO0(fn_note);
+#ifdef TODO
   (void) env;
   static int pin = 255;
   if (args != NULL) {
@@ -3591,7 +3592,7 @@ object *fn_note (object *args, object *env) {
     playnote(pin, note, octave);
   } else nonote(pin);
   return nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Tree Editor
@@ -3793,26 +3794,26 @@ object *fn_listlibrary (object *args, object *env) {
 // Wi-fi
 
 object *fn_available (object *args, object *env) {
-  TODO(fn_available);
-#ifdef TODO0
+  TODO0(fn_available);
+#ifdef TODO
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(AVAILABLE, PSTR("invalid stream"));
   return number(client.available());
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_wifiserver (object *args, object *env) {
-  TODO(fn_wifiserver);
-#ifdef TODO0
+  TODO0(fn_wifiserver);
+#ifdef TODO
   (void) args, (void) env;
   server.begin();
   return nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_wifisoftap (object *args, object *env) {
-  TODO(fn_wifisoftap);
-#ifdef TODO0
+  TODO0(fn_wifisoftap);
+#ifdef TODO
   (void) env;
   char ssid[33], pass[65];
   if (args == NULL) return WiFi.softAPdisconnect(true) ? tee : nil;
@@ -3831,29 +3832,29 @@ object *fn_wifisoftap (object *args, object *env) {
     WiFi.softAP(cstring(first, ssid, 33), cstring(second, pass, 65), channel, hidden);
   }
   return lispstring((char*)WiFi.softAPIP().toString().c_str());
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_connected (object *args, object *env) {
-  TODO(fn_connected);
-#ifdef TODO0
+  TODO0(fn_connected);
+#ifdef TODO
   (void) env;
   if (isstream(first(args))>>8 != WIFISTREAM) error2(CONNECTED, PSTR("invalid stream"));
   return client.connected() ? tee : nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_wifilocalip (object *args, object *env) {
-  TODO(fn_wifilocalip);
-#ifdef TODO0
+  TODO0(fn_wifilocalip);
+#ifdef TODO
   (void) args, (void) env;
   return lispstring((char*)WiFi.localIP().toString().c_str());
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 object *fn_wificonnect (object *args, object *env) {
-  TODO(fn_wificonnect);
-#ifdef TODO0
+  TODO0(fn_wificonnect);
+#ifdef TODO
   (void) env;
   char ssid[33], pass[65];
   if (args == NULL) { WiFi.disconnect(true); return nil; }
@@ -3865,7 +3866,7 @@ object *fn_wificonnect (object *args, object *env) {
   else if (result == WL_CONNECT_FAILED) error2(WIFICONNECT, PSTR("connection failed"));
   else error2(WIFICONNECT, PSTR("unable to connect"));
   return nil;
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Graphics functions
@@ -4611,10 +4612,10 @@ void deletesymbol (symbol_t name) {
 }
 
 void testescape () {
-  TODO(testescape);
-#ifdef TODO0
+  TODO0(testescape);
+#ifdef TODO
   if (Serial.read() == '~') error2(0, PSTR("escape!"));
-#endif  //  TODO0
+#endif  //  TODO
 }
 
 // Main evaluator
