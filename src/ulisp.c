@@ -1,8 +1,14 @@
+//  Based on https://github.com/technoblogy/ulisp-esp/blob/master/ulisp-esp.ino
 /* uLisp ESP Version 3.6 - www.ulisp.com
    David Johnson-Davies - www.technoblogy.com - 4th April 2021
 
    Licensed under the MIT license: https://opensource.org/licenses/MIT
 */
+
+// Not needed for BL602
+#define PROGMEM
+#define PGM_P   const char *
+#define PSTR(s) s
 
 // Lisp Library
 const char LispLibrary[] PROGMEM = "";
@@ -22,15 +28,11 @@ const char LispLibrary[] PROGMEM = "";
 
 // #include "LispLibrary.h"
 #include <setjmp.h>
-#include <SPI.h>
-#include <Wire.h>
 #include <limits.h>
-#include <EEPROM.h>
-#if defined (ESP8266)
-  #include <ESP8266WiFi.h>
-#elif defined (ESP32)
-  #include <WiFi.h>
-#endif
+#include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h> 
 
 #if defined(gfxsupport)
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -54,23 +56,11 @@ Adafruit_SSD1306 tft(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 #define WORDALIGNED __attribute__((aligned (4)))
 #define BUFFERSIZE 34  // Number of bits+2
-
-#if defined(ESP8266)
-  #define WORKSPACESIZE (4000-SDSIZE)     /* Cells (8*bytes) */
-  #define EEPROMSIZE 4096                 /* Bytes available for EEPROM */
-  #define SYMBOLTABLESIZE 512             /* Bytes */
-  #define SDCARD_SS_PIN 10
-
-#elif defined(ESP32)
-  #define WORKSPACESIZE (8000-SDSIZE)     /* Cells (8*bytes) */
-  #define EEPROMSIZE 4096                 /* Bytes available for EEPROM */
-  #define SYMBOLTABLESIZE 1024            /* Bytes */
-  #define analogWrite(x,y) dacWrite((x),(y))
-  #define SDCARD_SS_PIN 13
-
-#else
-#error "Board not supported!"
-#endif
+#define WORKSPACESIZE (8000-SDSIZE)     /* Cells (8*bytes) */
+#define EEPROMSIZE 4096                 /* Bytes available for EEPROM */
+#define SYMBOLTABLESIZE 1024            /* Bytes */
+#define analogWrite(x,y) dacWrite((x),(y))
+#define SDCARD_SS_PIN 13
 
 // C Macros
 
@@ -129,8 +119,8 @@ typedef unsigned int symbol_t;
 typedef struct sobject {
   union {
     struct {
-      sobject *car;
-      sobject *cdr;
+      struct sobject *car;
+      struct sobject *cdr;
     };
     struct {
       unsigned int type;
