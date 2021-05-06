@@ -6,9 +6,9 @@
 */
 
 // Not needed for BL602
+#define PGM_P     const char *
 #define PROGMEM
-#define PGM_P   const char *
-#define PSTR(s) s
+#define PSTR(s)   s
 
 // Lisp Library
 const char LispLibrary[] PROGMEM = "";
@@ -54,13 +54,13 @@ Adafruit_SSD1306 tft(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 // Platform specific settings
 
-#define WORDALIGNED __attribute__((aligned (4)))
-#define BUFFERSIZE 34  // Number of bits+2
-#define WORKSPACESIZE (8000-SDSIZE)     /* Cells (8*bytes) */
-#define EEPROMSIZE 4096                 /* Bytes available for EEPROM */
-#define SYMBOLTABLESIZE 1024            /* Bytes */
-#define analogWrite(x,y) dacWrite((x),(y))
-#define SDCARD_SS_PIN 13
+#define WORDALIGNED       
+#define BUFFERSIZE        34                // Number of bits+2
+#define WORKSPACESIZE     (8000-SDSIZE)     /* Cells (8*bytes) */
+#define EEPROMSIZE        4096              /* Bytes available for EEPROM */
+#define SYMBOLTABLESIZE   1024              /* Bytes */
+#define analogWrite(x,y)  dacWrite((x),(y))
+#define SDCARD_SS_PIN     13
 
 // C Macros
 
@@ -97,7 +97,7 @@ Adafruit_SSD1306 tft(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
 // Constants
 
-const int TRACEMAX = 3; // Number of traced functions
+#define TRACEMAX 3  // Number of traced functions
 enum type { ZZERO=0, SYMBOL=2, CODE=4, NUMBER=6, STREAM=8, CHARACTER=10, FLOAT=12, ARRAY=14, STRING=16, PAIR=18 };  // ARRAY STRING and PAIR must be last
 enum token { UNUSED, BRA, KET, QUO, DOT };
 enum stream { SERIALSTREAM, I2CSTREAM, SPISTREAM, SDSTREAM, WIFISTREAM, STRINGSTREAM, GFXSTREAM };
@@ -216,6 +216,8 @@ object *apply (symbol_t name, object *function, object *args, object *env);
 char *lookupsymbol (symbol_t name);
 char *cstring (object *form, char *buffer, int buflen);
 object *edit (object *fun);
+
+// BL602 functions
 
 // Error handling
 
@@ -4637,8 +4639,8 @@ inline int maxbuffer (char *buffer) {
 
 void pserial (char c) {
   LastPrint = c;
-  if (c == '\n') Serial.write('\r');
-  Serial.write(c);
+  if (c == '\n') putchar('\r');
+  putchar(c);
 }
 
 const char ControlCodes[] PROGMEM = "Null\0SOH\0STX\0ETX\0EOT\0ENQ\0ACK\0Bell\0Backspace\0Tab\0Newline\0VT\0"
@@ -4677,9 +4679,7 @@ void printstring (object *form, pfun_t pfun) {
 }
 
 void pfstring (PGM_P s, pfun_t pfun) {
-  char str[strlen_P(s)+1];
-  strcpy_P(str, s);
-  pstring(str, pfun);
+  pstring(s, pfun);
 }
 
 void pint (int i, pfun_t pfun) {
@@ -4834,21 +4834,21 @@ void loadfromlibrary (object *env) {
 // For line editor
 const int TerminalWidth = 80;
 volatile int WritePtr = 0, ReadPtr = 0;
-const int KybdBufSize = 333; // 42*8 - 3
+#define KybdBufSize 333 // 42*8 - 3
 char KybdBuf[KybdBufSize];
 volatile uint8_t KybdAvailable = 0;
 
 // Parenthesis highlighting
 void esc (int p, char c) {
-  Serial.write('\e'); Serial.write('[');
-  Serial.write((char)('0'+ p/100));
-  Serial.write((char)('0'+ (p/10) % 10));
-  Serial.write((char)('0'+ p % 10));
-  Serial.write(c);
+  putchar('\e'); putchar('[');
+  putchar((char)('0'+ p/100));
+  putchar((char)('0'+ (p/10) % 10));
+  putchar((char)('0'+ p % 10));
+  putchar(c);
 }
 
 void hilight (char c) {
-  Serial.write('\e'); Serial.write('['); Serial.write(c); Serial.write('m');
+  putchar('\e'); putchar('['); putchar(c); putchar('m');
 }
 
 void Highlight (int p, int wp, uint8_t invert) {
@@ -4866,11 +4866,11 @@ void Highlight (int p, int wp, uint8_t invert) {
     if (up) esc(up, 'A');
     if (col > targetcol) esc(left, 'D'); else esc(-left, 'C');
     if (invert) hilight('7');
-    Serial.write('('); Serial.write('\b');
+    putchar('('); putchar('\b');
     // Go back
     if (up) esc(up, 'B'); // Down
     if (col > targetcol) esc(left, 'C'); else esc(-left, 'D');
-    Serial.write('\b'); Serial.write(')');
+    putchar('\b'); putchar(')');
     if (invert) hilight('0');
   }
 }
@@ -4893,12 +4893,12 @@ void processkey (char c) {
   if (c == 8 || c == 0x7f) {     // Backspace key
     if (WritePtr > 0) {
       WritePtr--;
-      Serial.write(8); Serial.write(' '); Serial.write(8);
+      putchar(8); putchar(' '); putchar(8);
       if (WritePtr) c = KybdBuf[WritePtr-1];
     }
   } else if (WritePtr < KybdBufSize) {
     KybdBuf[WritePtr++] = c;
-    Serial.write(c);
+    putchar(c);
   }
 #if defined(vt100)
   // Do new parenthesis highlight
