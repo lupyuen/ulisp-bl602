@@ -297,7 +297,6 @@ const char oddargs[] PROGMEM = "odd number of arguments";
 // Set up workspace
 
 void initworkspace () {
-  printf("initworkspace\r\n");
   Freelist = NULL;
   for (int i=WORKSPACESIZE-1; i>=0; i--) {
     object *obj = &Workspace[i];
@@ -5303,7 +5302,6 @@ static void initgfx () {
 }
 
 static void initenv () {
-  printf("initenv\r\n");
   GlobalEnv = NULL;
   tee = symbol(TEE);
 }
