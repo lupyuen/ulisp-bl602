@@ -5328,7 +5328,7 @@ static void repl (object *env) {
     pfstring(PSTR(" : "), pserial);
     pint(BreakLevel, pserial);
   }
-  pserial('>'); pserial(' ');
+  ////pserial('>'); pserial(' ');
   object *line = read(gserial);
   if (BreakLevel && line == nil) { pln(pserial); return; }
   if (line == (object *)KET) error2(0, PSTR("unmatched right bracket"));
@@ -5350,9 +5350,10 @@ static void loop_ulisp () {
     volatile int autorun = 13;
     #endif
     if (autorun == 12) autorunimage();
+  } else {
+    printf("Error\r\n");
   }
   // Come here after error
-  printf("loop_ulisp\r\n");
   ////delay(100); while (Serial.available()) Serial.read();
   clrflag(NOESC); BreakLevel = 0;
   for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
