@@ -3494,7 +3494,9 @@ object *fn_cls (object *args, object *env) {
 
 // Arduino procedures
 
+/// Configure the GPIO for output, input, input pullup and input pulldown
 object *fn_pinmode (object *args, object *env) {
+  //  Parse the GPIO pin number and Output / Input / Input Pullup / Input Pulldown
   (void) env;
   int pin = checkinteger(PINMODE, first(args));
   PinMode pm = INPUT;
@@ -3510,6 +3512,7 @@ object *fn_pinmode (object *args, object *env) {
     #endif
   } else if (arg != nil) { pm = OUTPUT; }
 
+  //  Configure the GPIO input or output (from BL602 GPIO HAL)
   int rc;
   switch(pm) {
     case OUTPUT: rc = bl_gpio_enable_output(pin, 0, 0); assert(rc == 0); break;
@@ -3530,16 +3533,19 @@ object *fn_digitalread (object *args, object *env) {
 #endif  //  TODO
 }
 
+/// Set the GPIO Output to High or Low
 object *fn_digitalwrite (object *args, object *env) {
+  //  Parse the GPIO pin number and High / Low
   (void) env;
   int pin = checkinteger(DIGITALWRITE, first(args));
   object *arg = second(args);
   int mode;
-  if (keywordp(arg)) mode = checkkeyword(DIGITALWRITE, arg);
-  else if (integerp(arg)) mode = arg->integer ? HIGH : LOW;
-  else mode = (arg != nil) ? HIGH : LOW;
+  if (keywordp(arg)) { mode = checkkeyword(DIGITALWRITE, arg); }
+  else if (integerp(arg)) { mode = arg->integer ? HIGH : LOW; }
+  else { mode = (arg != nil) ? HIGH : LOW; }
 
-  int rc = bl_gpio_output_set(  //  Set the GPIO output (from BL602 GPIO HAL)
+  //  Set the GPIO output (from BL602 GPIO HAL)
+  int rc = bl_gpio_output_set(
       pin,  //  GPIO pin number
       mode  //  0 for low, 1 for high
   );
