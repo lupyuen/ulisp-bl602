@@ -2,6 +2,10 @@
 
 A version of the Lisp programming language for BL602 RISC-V boards.
 
+Read the article...
+
+- [__uLisp and Blockly on PineCone BL602 RISC-V Board__](https://lupyuen.github.io/articles/lisp)
+
 uLisp was ported to BL602 from ESP32 Arduino...
 
 https://github.com/technoblogy/ulisp-esp
