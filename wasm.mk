@@ -7,7 +7,7 @@
 # WebAssembly C and C++ Source Files
 WASM_CSRCS := src/ulisp.c
 
-# Build LVGL app: wasm/ulisp.html, ulisp.js, ulisp.wasm
+# Build uLisp app: wasm/ulisp.html, ulisp.js, ulisp.wasm
 TARGETS:= wasm/ulisp
 
 DEPS   := 
@@ -16,7 +16,8 @@ DEPS   :=
 CC     := emcc
 CPP    := em++
 
-# Options for emscripten. We specify the C and Rust WebAssembly functions to be exported.
+# Options for emscripten. We specify the C WebAssembly 
+# functions to be exported.
 CCFLAGS := \
 	-g \
 	-I include \
