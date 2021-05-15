@@ -1,4 +1,4 @@
-# BL602 uLisp Library
+# BL602 uLisp Library (Compiled for WebAssembly)
 
 A version of the Lisp programming language for BL602 RISC-V boards.
 
