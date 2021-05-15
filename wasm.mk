@@ -21,7 +21,7 @@ CCFLAGS := \
 	-g \
 	-I include \
 	-s WASM=1 \
-    -s "EXPORTED_FUNCTIONS=[ '_TODO' ]"
+    -s "EXPORTED_FUNCTIONS=[ '_setup_ulisp', '_execute_ulisp' ]"
 
 LDFLAGS := 
 
