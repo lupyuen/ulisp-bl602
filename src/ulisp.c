@@ -45,8 +45,11 @@ const char LispLibrary[] PROGMEM = "";
 #include <math.h>
 #include <string.h>
 #include <assert.h>
+#ifdef WASM  //  For WebAssembly
+#else        //  For BL602
 #include <bl_gpio.h>     //  For BL602 GPIO Hardware Abstraction Layer
 #include "nimble_npl.h"  //  For NimBLE Porting Layer (mulitasking functions)
+#endif  //  WASM
 #include "ulisp.h"
 
 #define putchar(c)   printf("%c", c)  //  putchar doesn't work on BL602

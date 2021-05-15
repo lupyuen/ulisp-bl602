@@ -5,7 +5,7 @@
 # emcc hello.c -s WASM=1 -o hello.html
 
 # WebAssembly C and C++ Source Files
-WASM_CSRCS := \
+WASM_CSRCS := src/ulisp.c
 
 # Build LVGL app: wasm/ulisp.html, ulisp.js, ulisp.wasm
 TARGETS:= wasm/ulisp
@@ -19,9 +19,8 @@ CPP    := em++
 # Options for emscripten. We specify the C and Rust WebAssembly functions to be exported.
 CCFLAGS := \
 	-g \
-	-I src/lv_core \
-	-D LV_USE_DEMO_WIDGETS \
-	-s WASM=1 \
+	-I include \
+	-D WASM=1 \
     -s "EXPORTED_FUNCTIONS=[ '_TODO' ]"
 
 LDFLAGS := 
