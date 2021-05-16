@@ -5352,7 +5352,9 @@ static void loop_ulisp () {
     #endif
     if (autorun == 12) autorunimage();
   } else {
+    //  In case of error, stop
     printf("Error\r\n");
+    return;
   }
   // Come here after error
   ////delay(100); while (Serial.available()) Serial.read();

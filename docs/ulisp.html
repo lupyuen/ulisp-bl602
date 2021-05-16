@@ -99,6 +99,27 @@
         font-family: 'Lucida Console', Monaco, monospace;
         outline: none;
       }
+
+      #input {
+        width: 100%;
+        height: 100px;
+        margin: 0 auto;
+        margin-top: 10px;
+        border-left: 0px;
+        border-right: 0px;
+        padding-left: 0px;
+        padding-right: 0px;
+        display: block;
+        background-color: white;
+        color: black;
+        font-family: 'Lucida Console', Monaco, monospace;
+        outline: none;
+      }
+
+      #run {
+        width: 100px;
+        height: 50px;
+      }
     </style>
   </head>
   <body>
@@ -1215,6 +1236,8 @@
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     </div>
     <textarea id="output" rows="8"></textarea>
+    <textarea id="input">( list 1 2 3 )</textarea>
+    <input id="run" type="button" value="Run" onclick="runScript()"></input>
 
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
@@ -1300,27 +1323,30 @@
       /// Wait for emscripten to be initialised
       Module.onRuntimeInitialized = function() {
         //  Init uLisp interpreter
-        Module.print("\n\nInit uLisp...\n\n");
+        Module.print("Init uLisp...\n");
         Module._setup_ulisp();
+      };
 
-        //  Pass a string from JavaScript to C WebAssembly
-        //  From https://stackoverflow.com/questions/46815205/how-to-pass-a-string-to-c-code-compiled-with-emscripten-for-webassembly
-        //  and https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html
-
+      /// Run the script in the input box
+      function runScript() {
         //  Get the uLisp script 
-        var scr = "( list 1 2 3 )";
-        //  var scr = document.getElementById("sample");
+        //  var scr = "( list 1 2 3 )";
+        var scr = document.getElementById("input").value;
 
         //  Create a pointer
         var ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
 
         //  Execute the uLisp script
-        Module.print("\n\nExecute uLisp: " + scr + "...\n\n");
+        Module.print("\nExecute uLisp: " + scr + "\n");
         Module._execute_ulisp(ptr);
 
         //  Free the memory allocated
         Module._free(ptr);
-      };
+
+        //  Pass a string from JavaScript to C WebAssembly
+        //  From https://stackoverflow.com/questions/46815205/how-to-pass-a-string-to-c-code-compiled-with-emscripten-for-webassembly
+        //  and https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html
+      }
 
     </script>    
     <!--  End of Custom Script  -->
