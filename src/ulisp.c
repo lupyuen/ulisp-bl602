@@ -45,8 +45,16 @@ const char LispLibrary[] PROGMEM = "";
 #include <math.h>
 #include <string.h>
 #include <assert.h>
+#ifdef __EMSCRIPTEN__  //  For WebAssembly
+int bl_gpio_enable_input(uint8_t pin, uint8_t pullup, uint8_t pulldown) { puts("bl_gpio_enable_input"); return 0; }
+int bl_gpio_enable_output(uint8_t pin, uint8_t pullup, uint8_t pulldown) { puts("bl_gpio_enable_output"); return 0; }
+int bl_gpio_output_set(uint8_t pin, uint8_t value) { puts("bl_gpio_output_set"); return 0; }
+uint32_t time_ms_to_ticks32(uint32_t millisec) { return millisec; }  //  1 tick is 1 millisecond
+void time_delay(uint32_t millisec) { int usleep(uint32_t usec); usleep(millisec * 1000); }   //  1 tick is 1 millisecond
+#else  //  For BL602
 #include <bl_gpio.h>     //  For BL602 GPIO Hardware Abstraction Layer
 #include "nimble_npl.h"  //  For NimBLE Porting Layer (mulitasking functions)
+#endif  //  __EMSCRIPTEN__
 #include "ulisp.h"
 
 #define putchar(c)   printf("%c", c)  //  putchar doesn't work on BL602
@@ -5336,7 +5344,9 @@ static void repl (object *env) {
 }
 
 static void loop_ulisp () {
+  //  Save the stack pointer
   if (!setjmp(exception)) {
+    //  If we have just saved the stack pointer (setjmp)...
     #if defined(resetautorun)
     volatile int autorun = 12; // Fudge to keep code size the same
     #else
@@ -5344,10 +5354,12 @@ static void loop_ulisp () {
     #endif
     if (autorun == 12) autorunimage();
   } else {
+    //  If we have just restored the stack pointer (longjmp)...
+    //  This means we have hit an error. We quit.
     printf("Error\r\n");
+    return;
   }
-  // Come here after error
-  ////delay(100); while (Serial.available()) Serial.read();
+  //  Previously: delay(100); while (Serial.available()) Serial.read();
   clrflag(NOESC); BreakLevel = 0;
   for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
   #if defined(sdcardsupport)
@@ -5356,7 +5368,7 @@ static void loop_ulisp () {
   #if defined(lisplibrary)
   if (!tstflag(LIBRARYLOADED)) { setflag(LIBRARYLOADED); loadfromlibrary(NULL); }
   #endif
-  ////client.stop();
+  //  TODO: client.stop();
   repl(NULL);
 }
 
