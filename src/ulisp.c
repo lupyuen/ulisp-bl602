@@ -5344,7 +5344,9 @@ static void repl (object *env) {
 }
 
 static void loop_ulisp () {
+  //  Save the stack pointer
   if (!setjmp(exception)) {
+    //  If we have just saved the stack pointer (setjmp)...
     #if defined(resetautorun)
     volatile int autorun = 12; // Fudge to keep code size the same
     #else
@@ -5352,12 +5354,12 @@ static void loop_ulisp () {
     #endif
     if (autorun == 12) autorunimage();
   } else {
-    //  In case of error, stop
+    //  If we have just restored the stack pointer (longjmp)...
+    //  This means we have hit an error. We quit.
     printf("Error\r\n");
     return;
   }
-  // Come here after error
-  ////delay(100); while (Serial.available()) Serial.read();
+  //  Previously: delay(100); while (Serial.available()) Serial.read();
   clrflag(NOESC); BreakLevel = 0;
   for (int i=0; i<TRACEMAX; i++) TraceDepth[i] = 0;
   #if defined(sdcardsupport)
@@ -5366,7 +5368,7 @@ static void loop_ulisp () {
   #if defined(lisplibrary)
   if (!tstflag(LIBRARYLOADED)) { setflag(LIBRARYLOADED); loadfromlibrary(NULL); }
   #endif
-  ////client.stop();
+  //  TODO: client.stop();
   repl(NULL);
 }
 
