@@ -1,3 +1,4 @@
+src/*.o
 wasm/*.html
 wasm/*.js
 wasm/*.o
