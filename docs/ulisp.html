@@ -1300,6 +1300,7 @@
       /// Wait for emscripten to be initialised
       Module.onRuntimeInitialized = function() {
         //  Init uLisp interpreter
+        Module.print("\n\nInit uLisp...\n\n");
         Module._setup_ulisp();
 
         //  Pass a string from JavaScript to C WebAssembly
@@ -1314,6 +1315,7 @@
         var ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
 
         //  Execute the uLisp script
+        Module.print("\n\nExecute uLisp: " + scr + "...\n\n");
         Module._execute_ulisp(ptr);
 
         //  Free the memory allocated
