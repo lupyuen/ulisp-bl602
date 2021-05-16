@@ -22,7 +22,8 @@ CCFLAGS := \
 	-g \
 	-I include \
 	-s WASM=1 \
-    -s "EXPORTED_FUNCTIONS=[ '_setup_ulisp', '_execute_ulisp' ]"
+    -s "EXPORTED_FUNCTIONS=[ '_setup_ulisp', '_execute_ulisp' ]" \
+	-s "EXTRA_EXPORTED_RUNTIME_METHODS=[ 'cwrap', 'allocate', 'intArrayFromString' ]"
 
 LDFLAGS := 
 
@@ -59,3 +60,5 @@ $(TARGETS): % : $(filter-out $(MAINS), $(OBJ)) %.o
 	-Wl,--end-group \
 	$(CCFLAGS) \
 	$(LDFLAGS)
+	cp wasm/ulisp.js   docs
+	cp wasm/ulisp.wasm docs
