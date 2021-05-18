@@ -23,6 +23,9 @@ void yield_ulisp(void) {
 char *simulation_get_events(void) {
     assert(events[0] == '[');
     assert(events[strlen(events) - 1] == ']');
+
+    //  Erase the leading comma: "[,...]" becomes "[ ...]"
+    if (events[1] == ',') { events[1] = ' '; }
     return events;
 }
 
@@ -37,7 +40,16 @@ int bl_gpio_enable_output(uint8_t pin, uint8_t pullup, uint8_t pulldown) {
 }
 
 int bl_gpio_output_set(uint8_t pin, uint8_t value) { 
-    puts("bl_gpio_output_set"); 
+    snprintf(
+        events - 1,  //  Skip the trailing "]"
+        sizeof(events) + 1,  //  Count the skipped "]"
+        ", { \"gpio_output_set\": { "
+            "\"pin\": %d, "
+            "\"value\": %d "
+        "} } ]",
+        pin,
+        value
+    );
     return 0; 
 }
 
