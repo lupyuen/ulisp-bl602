@@ -16,7 +16,7 @@ void simulation_clear_events(void) {
 
 /// Preempt the uLisp task and allow background tasks to run
 void yield_ulisp(void) {
-    //  TODO
+    //  TODO: If we have yielded too many times, stop
 }
 
 /// Return the JSON Stream of Simulation Events
