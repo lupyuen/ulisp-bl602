@@ -14,7 +14,8 @@ void simulation_clear_events(void) {
     strcpy(events, "[]");
 }
 
-/// Preempt the uLisp task and allow background tasks to run
+/// Preempt the uLisp task and allow background tasks to run.
+/// Called by event() and sp_loop() in src/ulisp.c
 void yield_ulisp(void) {
     //  TODO: If we have yielded too many times, stop
 }
