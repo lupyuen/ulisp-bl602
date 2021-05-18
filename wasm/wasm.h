@@ -1,6 +1,6 @@
 //  WebAssembly Interface for uLisp
-#ifndef _ULISP_WASM_H
-#define _ULISP_WASM_H
+#ifndef ULISP_WASM_H
+#define ULISP_WASM_H
 #include <stdint.h>
 
 int bl_gpio_enable_input(uint8_t pin, uint8_t pullup, uint8_t pulldown);
@@ -11,4 +11,4 @@ void time_delay(uint32_t ticks);
 //  1 tick is 1 millisecond
 static inline uint32_t time_ms_to_ticks32(uint32_t millisec) { return millisec; }
 
-#endif  //  _ULISP_WASM_H
+#endif  //  ULISP_WASM_H

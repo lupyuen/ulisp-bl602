@@ -45,13 +45,15 @@ const char LispLibrary[] PROGMEM = "";
 #include <math.h>
 #include <string.h>
 #include <assert.h>
-#ifdef __EMSCRIPTEN__  //  For WebAssembly
-#include "../wasm/wasm.h"
-#else  //  For BL602
-#include <bl_gpio.h>     //  For BL602 GPIO Hardware Abstraction Layer
-#include "nimble_npl.h"  //  For NimBLE Porting Layer (mulitasking functions)
-#endif  //  __EMSCRIPTEN__
 #include "ulisp.h"
+
+#ifdef __EMSCRIPTEN__      //  If building for WebAssembly...
+#include "../wasm/wasm.h"  //  For WebAssembly Interface
+
+#else                      //  If building for BL602...
+#include <bl_gpio.h>       //  For BL602 GPIO Hardware Abstraction Layer
+#include "nimble_npl.h"    //  For NimBLE Porting Layer (mulitasking functions)
+#endif                     //  __EMSCRIPTEN__
 
 #define putchar(c)   printf("%c", c)  //  putchar doesn't work on BL602
 
@@ -5381,10 +5383,16 @@ void execute_ulisp(const char *line) {
   loop_ulisp();
 }
 
-#ifdef __EMSCRIPTEN__  //  For WebAssembly
-#else   //  For BL602
-/// Preempt the uLisp task and allow background tasks to run
+#ifdef __EMSCRIPTEN__  //  If building for WebAssembly...
+
+//  yield_ulisp() is defined in wasm/wasm.c
+
+#else                  //  If building for BL602...
+
+/// Preempt the uLisp task and allow background tasks to run.
+/// Called by event() and sp_loop() in src/ulisp.c
 void yield_ulisp(void) {
   time_delay(100);
 }
+
 #endif  //  __EMSCRIPTEN__
