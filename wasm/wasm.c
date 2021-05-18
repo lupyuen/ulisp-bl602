@@ -27,7 +27,6 @@ const char *get_simulation_events(void) {
 
     //  Erase the leading comma: "[,...]" becomes "[ ...]"
     if (events[1] == ',') { events[1] = ' '; }
-    printf("Events: %s\n", events);
     return events;
 }
 

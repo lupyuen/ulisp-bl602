@@ -1334,23 +1334,24 @@
         //  var scr = "( list 1 2 3 )";
         var scr = document.getElementById("input").value;
 
-        //  Create a pointer
+        //  Create a pointer for the script
         var scr_ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
 
-        //  Clear the Simulation Events
+        //  Clear the JSON Stream of Simulation Events
         Module._clear_simulation_events();
 
         //  Execute the uLisp script
         Module.print("\nExecute uLisp: " + scr + "\n");
         Module._execute_ulisp(scr_ptr);
 
-        //  Get the Simulation Events
+        //  Get the JSON Stream of Simulation Events. Looks like...
+        //  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
+        //    { "time_delay": { "ticks": 1000 } }, ... ]
         var json_ptr = Module._get_simulation_events();
-        console.log(json_ptr);
-        //  var json = Pointer_stringify(json_ptr);
-        //  Module.print("\nEvents: " + json + "\n");
+        var json = Module.UTF8ToString(json_ptr);
+        Module.print("Events: " + json + "\n");
 
-        //  Free the memory allocated
+        //  Free the memory allocated for the script
         Module._free(scr_ptr);
 
         //  More about passing a string from JavaScript to C WebAssembly:
