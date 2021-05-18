@@ -5,6 +5,10 @@
 #include "wasm.h"
 
 /// JSON Stream of Simulation Events:
+/// This uLisp script...
+///   ( digitalwrite 11 :high )
+///   ( delay 1000 )
+/// Will generate this JSON Stream of Simulation Events...
 /// [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
 ///   { "time_delay": { "ticks": 1000 } }, 
 ///   ... 
@@ -23,6 +27,7 @@ const char *get_simulation_events(void) {
 
     //  Erase the leading comma: "[,...]" becomes "[ ...]"
     if (events[1] == ',') { events[1] = ' '; }
+    printf("Events: %s\n", events);
     return events;
 }
 
