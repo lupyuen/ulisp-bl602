@@ -1335,14 +1335,23 @@
         var scr = document.getElementById("input").value;
 
         //  Create a pointer
-        var ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
+        var scr_ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
+
+        //  Clear the Simulation Events
+        Module._clear_simulation_events();
 
         //  Execute the uLisp script
         Module.print("\nExecute uLisp: " + scr + "\n");
-        Module._execute_ulisp(ptr);
+        Module._execute_ulisp(scr_ptr);
+
+        //  Get the Simulation Events
+        var json_ptr = Module._get_simulation_events();
+        console.log(json_ptr);
+        //  var json = Pointer_stringify(json_ptr);
+        //  Module.print("\nEvents: " + json + "\n");
 
         //  Free the memory allocated
-        Module._free(ptr);
+        Module._free(scr_ptr);
 
         //  More about passing a string from JavaScript to C WebAssembly:
         //  https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html

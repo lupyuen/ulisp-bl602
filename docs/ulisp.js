@@ -1152,9 +1152,9 @@ function updateGlobalBufferAndViews(buf) {
   Module['HEAPF64'] = HEAPF64 = new Float64Array(buf);
 }
 
-var STACK_BASE = 5322304,
+var STACK_BASE = 5323520,
     STACKTOP = STACK_BASE,
-    STACK_MAX = 79424;
+    STACK_MAX = 80640;
 
 assert(STACK_BASE % 16 === 0, 'stack must start aligned');
 
@@ -1919,25 +1919,6 @@ var ASM_CONSTS = {
   function _setTempRet0($i) {
       setTempRet0(($i) | 0);
     }
-
-  var _emscripten_get_now;if (ENVIRONMENT_IS_NODE) {
-    _emscripten_get_now = function() {
-      var t = process['hrtime']();
-      return t[0] * 1e3 + t[1] / 1e6;
-    };
-  } else if (typeof dateNow !== 'undefined') {
-    _emscripten_get_now = dateNow;
-  } else _emscripten_get_now = function() { return performance.now(); }
-  ;
-  function _usleep(useconds) {
-      // int usleep(useconds_t useconds);
-      // http://pubs.opengroup.org/onlinepubs/000095399/functions/usleep.html
-      // We're single-threaded, so use a busy loop. Super-ugly.
-      var start = _emscripten_get_now();
-      while (_emscripten_get_now() - start < useconds / 1000) {
-        // Do nothing.
-      }
-    }
 var ASSERTIONS = true;
 
 
@@ -1969,7 +1950,7 @@ function intArrayToString(array) {
 
 
 __ATINIT__.push({ func: function() { ___wasm_call_ctors() } });
-var asmLibraryArg = { "__assert_fail": ___assert_fail, "emscripten_longjmp": _emscripten_longjmp, "emscripten_longjmp_jmpbuf": _emscripten_longjmp_jmpbuf, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "fd_write": _fd_write, "getTempRet0": _getTempRet0, "invoke_iii": invoke_iii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "memory": wasmMemory, "setTempRet0": _setTempRet0, "usleep": _usleep };
+var asmLibraryArg = { "__assert_fail": ___assert_fail, "emscripten_longjmp": _emscripten_longjmp, "emscripten_longjmp_jmpbuf": _emscripten_longjmp_jmpbuf, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "fd_write": _fd_write, "getTempRet0": _getTempRet0, "invoke_iii": invoke_iii, "invoke_v": invoke_v, "invoke_vi": invoke_vi, "memory": wasmMemory, "setTempRet0": _setTempRet0 };
 var asm = createWasm();
 /** @type {function(...*):?} */
 var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
@@ -1991,6 +1972,12 @@ var _testSetjmp = Module["_testSetjmp"] = createExportWrapper("testSetjmp");
 
 /** @type {function(...*):?} */
 var _free = Module["_free"] = createExportWrapper("free");
+
+/** @type {function(...*):?} */
+var _clear_simulation_events = Module["_clear_simulation_events"] = createExportWrapper("clear_simulation_events");
+
+/** @type {function(...*):?} */
+var _get_simulation_events = Module["_get_simulation_events"] = createExportWrapper("get_simulation_events");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");

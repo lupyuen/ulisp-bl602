@@ -12,12 +12,12 @@
 static char events[1024] = "[]";
 
 /// Clear the JSON Stream of Simulation Events
-void simulation_clear_events(void) {
+void clear_simulation_events(void) {
     strcpy(events, "[]");
 }
 
 /// Return the JSON Stream of Simulation Events
-char *simulation_get_events(void) {
+const char *get_simulation_events(void) {
     assert(events[0] == '[');
     assert(events[strlen(events) - 1] == ']');
 
