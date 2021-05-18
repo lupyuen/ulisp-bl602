@@ -5,7 +5,7 @@
 # emcc hello.c -s WASM=1 -o hello.html
 
 # WebAssembly C and C++ Source Files
-WASM_CSRCS := src/ulisp.c
+WASM_CSRCS := src/ulisp.c wasm/wasm.c
 
 # Build uLisp app: wasm/ulisp.html, ulisp.js, ulisp.wasm
 TARGETS:= wasm/ulisp

@@ -22,6 +22,18 @@ Let's try this out here with the [__`wasm` branch of `ulisp-bl602`__](https://gi
 
 ![uLisp in WebAssembly](https://lupyuen.github.io/images/lisp-wasm.png)
 
+# Build uLisp for WebAssembly
+
+```bash
+make -f wasm.mk
+```
+
+The compiled files `ulisp.js` and `ulisp.wasm` will be copied to [`docs`](docs).
+
+To test, run a local web server and browse to [`docs/ulisp.html`](docs/ulisp.html).
+
+(WebAssembly requires a local web server, it won't run from the local filesystem)
+
 # BL602 uLisp Library (Compiled for WebAssembly)
 
 A version of the Lisp programming language for BL602 RISC-V boards.
