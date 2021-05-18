@@ -1321,6 +1321,11 @@
     <!--  Custom Script  -->
     <script type="text/javascript">
 
+      /// JSON Stream of Simulation Events emitted by uLisp Interpreter. Looks like...
+      ///  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
+      ///    { "time_delay": { "ticks": 1000 } }, ... ]
+      var simulation_events = [];
+
       /// Wait for emscripten to be initialised
       Module.onRuntimeInitialized = function() {
         //  Init uLisp interpreter
@@ -1348,8 +1353,11 @@
         //  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
         //    { "time_delay": { "ticks": 1000 } }, ... ]
         var json_ptr = Module._get_simulation_events();
+
+        //  Parse the JSON Stream of Simulation Events
         var json = Module.UTF8ToString(json_ptr);
-        Module.print("Events: " + json + "\n");
+        simulation_events = JSON.parse(json);
+        Module.print("Events: " + JSON.stringify(simulation_events, null, 2) + "\n");
 
         //  Free the memory allocated for the script
         Module._free(scr_ptr);
