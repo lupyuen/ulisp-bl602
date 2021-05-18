@@ -46,11 +46,7 @@ const char LispLibrary[] PROGMEM = "";
 #include <string.h>
 #include <assert.h>
 #ifdef __EMSCRIPTEN__  //  For WebAssembly
-int bl_gpio_enable_input(uint8_t pin, uint8_t pullup, uint8_t pulldown) { puts("bl_gpio_enable_input"); return 0; }
-int bl_gpio_enable_output(uint8_t pin, uint8_t pullup, uint8_t pulldown) { puts("bl_gpio_enable_output"); return 0; }
-int bl_gpio_output_set(uint8_t pin, uint8_t value) { puts("bl_gpio_output_set"); return 0; }
-uint32_t time_ms_to_ticks32(uint32_t millisec) { return millisec; }  //  1 tick is 1 millisecond
-void time_delay(uint32_t millisec) { int usleep(uint32_t usec); usleep(millisec * 1000); }   //  1 tick is 1 millisecond
+#include "../wasm/wasm.h"
 #else  //  For BL602
 #include <bl_gpio.h>     //  For BL602 GPIO Hardware Abstraction Layer
 #include "nimble_npl.h"  //  For NimBLE Porting Layer (mulitasking functions)
@@ -256,6 +252,7 @@ void prin1object (object *form, pfun_t pfun);
 void printstring (object *form, pfun_t pfun);
 void testescape ();
 int glibrary ();
+void yield_ulisp(void);
 
 // BL602 functions
 
@@ -1699,7 +1696,8 @@ object *sp_setq (object *args, object *env) {
 object *sp_loop (object *args, object *env) {
   object *start = args;
   for (;;) {
-    time_delay(100);
+    //  Preempt the uLisp task and allow background tasks to run
+    yield_ulisp();
     args = start;
     while (args != NULL) {
       object *result = eval(car(args),env);
@@ -4660,7 +4658,9 @@ void testescape () {
 object *eval (object *form, object *env) {
   int TC=0;
   EVAL:
-  //// TODO: yield(); // Needed on ESP8266 to avoid Soft WDT Reset
+  // Preempt the uLisp task and allow background tasks to run
+  yield_ulisp();
+  // Previously: yield(); // Needed on ESP8266 to avoid Soft WDT Reset
   // Enough space?
   if (Freespace <= WORKSPACESIZE>>4) gc(form, env);
   // Escape
@@ -5380,3 +5380,11 @@ void execute_ulisp(const char *line) {
   input_len = strlen(line);
   loop_ulisp();
 }
+
+#ifdef __EMSCRIPTEN__  //  For WebAssembly
+#else   //  For BL602
+/// Preempt the uLisp task and allow background tasks to run
+void yield_ulisp(void) {
+  time_delay(100);
+}
+#endif  //  __EMSCRIPTEN__

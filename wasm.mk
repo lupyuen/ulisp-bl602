@@ -22,7 +22,7 @@ CCFLAGS := \
 	-g \
 	-I include \
 	-s WASM=1 \
-    -s "EXPORTED_FUNCTIONS=[ '_setup_ulisp', '_execute_ulisp' ]" \
+    -s "EXPORTED_FUNCTIONS=[ '_setup_ulisp', '_execute_ulisp', '_simulation_clear_events', '_simulation_get_events' ]" \
 	-s "EXTRA_EXPORTED_RUNTIME_METHODS=[ 'cwrap', 'allocate', 'intArrayFromString' ]"
 
 LDFLAGS := 
