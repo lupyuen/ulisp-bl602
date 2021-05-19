@@ -1327,7 +1327,7 @@
       /// JSON Stream of Simulation Events emitted by uLisp Interpreter. Looks like...
       ///  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
       ///    { "time_delay": { "ticks": 1000 } }, ... ]
-      var simulation_events = [];
+      let simulation_events = [];
 
       /// Wait for emscripten to be initialised
       Module.onRuntimeInitialized = function() {
@@ -1340,32 +1340,40 @@
       function runScript() {
         //  Get the uLisp script 
         //  var scr = "( list 1 2 3 )";
-        var scr = document.getElementById("input").value;
+        const scr = document.getElementById("input").value;
 
-        //  Create a pointer for the script
-        var scr_ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
+        //  Allocate WebAssembly memory for the script
+        const scr_ptr = Module.allocate(intArrayFromString(scr), ALLOC_NORMAL);
 
-        //  Clear the JSON Stream of Simulation Events
-        Module._clear_simulation_events();
+        //  Catch any errors so that we can free the allocated memory
+        try {
+          //  Clear the JSON Stream of Simulation Events in WebAssembly
+          Module._clear_simulation_events();
 
-        //  Execute the uLisp script
-        Module.print("\nExecute uLisp: " + scr + "\n");
-        Module._execute_ulisp(scr_ptr);
+          //  Execute the uLisp script in WebAssembly
+          Module.print("\nExecute uLisp: " + scr + "\n");
+          Module._execute_ulisp(scr_ptr);
 
-        //  Get the JSON Stream of Simulation Events. Looks like...
-        //  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
-        //    { "time_delay": { "ticks": 1000 } }, ... ]
-        var json_ptr = Module._get_simulation_events();
+          //  Get the JSON string of Simulation Events from WebAssembly. Looks like...
+          //  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
+          //    { "time_delay": { "ticks": 1000 } }, ... ]
+          const json_ptr = Module._get_simulation_events();
 
-        //  Parse the JSON Stream of Simulation Events
-        var json = Module.UTF8ToString(json_ptr);
-        simulation_events = JSON.parse(json);
-        Module.print("Events: " + JSON.stringify(simulation_events, null, 2) + "\n");
+          //  Convert the JSON string from WebAssembly to JavaScript
+          const json = Module.UTF8ToString(json_ptr);
 
-        //  Free the memory allocated for the script
-        Module._free(scr_ptr);
+          //  Parse the JSON Stream of Simulation Events
+          simulation_events = JSON.parse(json);
+          Module.print("Events: " + JSON.stringify(simulation_events, null, 2) + "\n");
+        } catch(err) {
+          //  Catch and show any errors
+          console.error(err);
+        } finally {
+          //  Free the WebAssembly memory allocated for the script
+          Module._free(scr_ptr);
+        }
 
-        //  More about passing a string from JavaScript to C WebAssembly:
+        //  More about passing strings between JavaScript and C WebAssembly:
         //  https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html
         //  https://stackoverflow.com/questions/46815205/how-to-pass-a-string-to-c-code-compiled-with-emscripten-for-webassembly
       }
@@ -1376,5 +1384,3 @@
     <script async type="text/javascript" src="ulisp.js"></script>
   </body>
 </html>
-
-
