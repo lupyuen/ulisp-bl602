@@ -24,7 +24,19 @@ Let's try this out here with the [__`wasm` branch of `ulisp-bl602`__](https://gi
 
 ![uLisp in WebAssembly](https://lupyuen.github.io/images/lisp-wasm.png)
 
+# Source Files
+
+-   [`src/ulisp.c`](src/ulisp.c): uLisp Interpreter for BL602 and WebAssembly, ported from uLisp for ESP32
+
+-   [`wasm/wasm.c`](wasm/wasm.c): WebAssembly integration for uLisp (JSON Stream for Simulation Events)
+
+-   [`docs/ulisp.html`](docs/ulisp.html): HTML file with JavaScript that invokes uLisp WebAssembly for REPL
+
+-   [`wasm.mk`](wasm.mk): Build uLisp WebAssembly with Emscripten
+
 # Build uLisp for WebAssembly
+
+To build uLisp for WebAssembly with Emscripten...
 
 ```bash
 make -f wasm.mk
