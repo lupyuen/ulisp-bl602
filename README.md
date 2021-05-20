@@ -20,6 +20,16 @@ Let's try this out here with the [__`wasm` branch of `ulisp-bl602`__](https://gi
 
 - [__Try uLisp WebAssembly here__](https://lupyuen.github.io/ulisp-bl602/ulisp.html)
 
+The BL602 Simulator also works with Blockly to preview for dragged-and-dropped uLisp Blockly Apps...
+
+- [__Watch the BL602 Simulator + uLisp WebAssembly + Blockly demo on YouTube__](https://youtu.be/Ag2CERd1OzQ)
+
+- [__Try BL602 Simulator + uLisp WebAssembly + Blockly here__](https://appkaki.github.io/blockly-ulisp/demos/simulator/)
+
+- [__uLisp Blockly source code__](https://github.com/AppKaki/blockly-ulisp)
+
+Check this Twitter Thread for updates...
+
 - [__Follow the Twitter Thread__](https://twitter.com/MisterTechBlog/status/1393554618924212224)
 
 ![uLisp in WebAssembly](https://lupyuen.github.io/images/lisp-wasm.png)
