@@ -86,7 +86,7 @@
 
       #output {
         width: 100%;
-        height: 200px;
+        height: 300px;
         margin: 0 auto;
         margin-top: 10px;
         border-left: 0px;
@@ -103,7 +103,7 @@
 
       #input {
         width: 100%;
-        height: 100px;
+        height: 150px;
         margin: 0 auto;
         margin-top: 10px;
         border-left: 0px;
@@ -1425,23 +1425,7 @@
         switch (event_type) {
 
           //  Set GPIO output
-          case "gpio_output_set": {
-            //  Fetch the GPIO value: 0 (Low) or 1 (High)
-            switch (args.value) {
-              case 0: {  //  Set GPIO to Low (LED on)
-                //  TODO: Draw the LED as on
-                console.log("LED on");
-                break;
-              }
-              case 1: {  //  Set GPIO to High (LED off)
-                //  TODO: Draw the LED as off
-                console.log("LED off");
-                break;
-              }
-              default: throw new Error("Unknown gpio_output_set value: " + args.value);
-            }
-            break;
-          }
+          case "gpio_output_set": timeout += gpio_output_set(args.pin, args.value); break;
 
           //  Unknown event type
           default: throw new Error("Unknown event type: " + event_type);
@@ -1451,6 +1435,25 @@
         if (simulation_events.length > 0) {
           window.setTimeout("simulateEvents()", timeout);
         }
+      }
+
+      /// Set GPIO output to value: 0 (Low) or 1 (High)
+      function gpio_output_set(pin, value) {
+        //  Check the value
+        switch (value) {
+          case 0: {  //  Set GPIO to Low (LED on)
+            //  TODO: Draw the LED as on
+            console.log("LED on");
+            break;
+          }
+          case 1: {  //  Set GPIO to High (LED off)
+            //  TODO: Draw the LED as off
+            console.log("LED off");
+            break;
+          }
+          default: throw new Error("Unknown gpio_output_set value: " + args.value);
+        }
+        return 0;
       }
 
     </script>    
