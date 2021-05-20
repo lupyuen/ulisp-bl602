@@ -1327,7 +1327,7 @@
     <script type="text/javascript">
 
       /// JSON Stream of Simulation Events emitted by uLisp Interpreter. Looks like...
-      ///  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
+      ///  [ { "gpio_output_set": { "pin": 11, "value": 1 } }, 
       ///    { "time_delay": { "ticks": 1000 } }, ... ]
       let simulation_events = [];
 
@@ -1376,7 +1376,7 @@
           Module._execute_ulisp(scr_ptr);
 
           //  Get the JSON string of Simulation Events from WebAssembly. Looks like...
-          //  [ { "bl_gpio_output_set": { "pin": 11, "value": 1 } }, 
+          //  [ { "gpio_output_set": { "pin": 11, "value": 1 } }, 
           //    { "time_delay": { "ticks": 1000 } }, ... ]
           const json_ptr = Module._get_simulation_events();
 
@@ -1394,9 +1394,59 @@
           Module._free(scr_ptr);
         }
 
+        //  Start a timer to simulate the returned events
+        if (simulation_events.length > 0) {
+          window.setTimeout("simulateEvents()", 1);
+        }
+
         //  More about passing strings between JavaScript and C WebAssembly:
         //  https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html
         //  https://stackoverflow.com/questions/46815205/how-to-pass-a-string-to-c-code-compiled-with-emscripten-for-webassembly
+      }
+
+      /// Simulate the BL602 Simulation Events recorded in simulate_events
+      function simulateEvents() {
+        //  Take the first event and update the queue
+        if (simulation_events.length == 0) { return; }
+        const event = simulation_events.shift();
+        //  event looks like:
+        //  { "gpio_output_set": { "pin": 11, "value": 1 } }
+
+        //  Get the event type and parameters
+        const event_type = Object.keys(event)[0];
+        const args = event[event_type];
+
+        //  Timeout in milliseconds to the next event
+        let timeout = 1;
+        
+        //  Handle each event type
+        switch (event_type) {
+
+          //  Set GPIO output
+          case "gpio_output_set": {
+            //  Fetch the GPIO value: 0 (Low) or 1 (High)
+            switch (args.value) {
+              case 0: {  //  Set GPIO to Low (LED on)
+                console.log("LED on");
+                break;
+              }
+              case 1: {  //  Set GPIO to High (LED off)
+                console.log("LED off");
+                break;
+              }
+              default: throw new Error("Unknown gpio_output_set value: " + args.value);
+            }
+            break;
+          }
+
+          //  Unknown event type
+          default: throw new Error("Unknown event type: " + event_type);
+        }
+
+        //  Simulate the next event
+        if (simulation_events.length > 0) {
+          window.setTimeout("simulateEvents()", timeout);
+        }
       }
 
     </script>    
