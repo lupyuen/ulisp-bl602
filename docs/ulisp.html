@@ -86,7 +86,7 @@
 
       #output {
         width: 100%;
-        height: 600px;
+        height: 200px;
         margin: 0 auto;
         margin-top: 10px;
         border-left: 0px;
@@ -97,12 +97,13 @@
         background-color: black;
         color: white;
         font-family: 'Lucida Console', Monaco, monospace;
+        font-size: small;
         outline: none;
       }
 
       #input {
         width: 100%;
-        height: 200px;
+        height: 100px;
         margin: 0 auto;
         margin-top: 10px;
         border-left: 0px;
@@ -113,13 +114,14 @@
         background-color: white;
         color: black;
         font-family: 'Lucida Console', Monaco, monospace;
+        font-size: small;
         outline: none;
       }
 
       #run {
-        width: 150px;
-        height: 75px;
-        font-size: x-large;
+        width: 100px;
+        height: 30px;
+        font-size: small;
       }
     </style>
   </head>
@@ -1334,7 +1336,26 @@
         //  Init uLisp interpreter
         Module.print("Init uLisp...\n");
         Module._setup_ulisp();
+
+        // Load the simulator pic and render it
+        const image = new Image();
+        image.onload = renderSimulator;  //  Draw when image has loaded
+        image.src = 'pinecone.png';      //  Image to be loaded
       };
+
+      /// Render the simulator pic. Based on https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
+      function renderSimulator() {
+        //  Get the HTML canvas and context
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        //  Resize the canvas
+        canvas.width  = 400;
+        canvas.height = 300;
+
+        //  Draw the image to fill the canvas
+        ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+      }
 
       /// Run the script in the input box
       function runScript() {
