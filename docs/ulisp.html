@@ -1239,11 +1239,7 @@
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     </div>
     <textarea id="output" rows="8"></textarea>
-    <textarea id="input">(list
-    ( digitalwrite 11 :low )
-    ( delay 1000 )
-    ( digitalwrite 11 :high )
-    ( delay 1000 )
+    <textarea id="input">( loop
     ( digitalwrite 11 :low )
     ( delay 1000 )
     ( digitalwrite 11 :high )
