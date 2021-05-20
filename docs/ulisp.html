@@ -1437,22 +1437,27 @@
         }
       }
 
-      /// Set GPIO output to value: 0 (Low) or 1 (High)
+      /// Set GPIO pin output to the value: 0 (Low) or 1 (High)
       function gpio_output_set(pin, value) {
-        //  Check the value
+        //  Get the HTML Canvas Context
+        const ctx = document.getElementById('canvas').getContext('2d');
+
+        //  Set the simulated LED colour depending on value
         switch (value) {
-          case 0: {  //  Set GPIO to Low (LED on)
-            //  TODO: Draw the LED as on
-            console.log("LED on");
-            break;
-          }
-          case 1: {  //  Set GPIO to High (LED off)
-            //  TODO: Draw the LED as off
-            console.log("LED off");
-            break;
-          }
+          //  Set GPIO to Low (LED on)
+          case 0: ctx.fillStyle = '#B0B0FF'; break;  //  Blue
+
+          //  Set GPIO to High (LED off)
+          case 1: ctx.fillStyle = '#CCCCCC'; break;  //  Grey
+
+          //  Unknown value
           default: throw new Error("Unknown gpio_output_set value: " + args.value);
         }
+
+        //  Draw the LED colour
+        ctx.fillRect(315, 116, 35, 74);
+
+        //  Simulate next event in 0 milliseconds
         return 0;
       }
 
