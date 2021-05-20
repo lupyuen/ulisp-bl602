@@ -1404,7 +1404,9 @@
         //  https://stackoverflow.com/questions/46815205/how-to-pass-a-string-to-c-code-compiled-with-emscripten-for-webassembly
       }
 
-      /// Simulate the BL602 Simulation Events recorded in simulate_events
+      /// Simulate the BL602 Simulation Events recorded in simulate_events, which contains...
+      ///  [ { "gpio_output_set": { "pin": 11, "value": 1 } }, 
+      ///    { "time_delay": { "ticks": 1000 } }, ... ]
       function simulateEvents() {
         //  Take the first event and update the queue
         if (simulation_events.length == 0) { return; }
@@ -1418,7 +1420,7 @@
 
         //  Timeout in milliseconds to the next event
         let timeout = 1;
-        
+
         //  Handle each event type
         switch (event_type) {
 
@@ -1427,10 +1429,12 @@
             //  Fetch the GPIO value: 0 (Low) or 1 (High)
             switch (args.value) {
               case 0: {  //  Set GPIO to Low (LED on)
+                //  TODO: Draw the LED as on
                 console.log("LED on");
                 break;
               }
               case 1: {  //  Set GPIO to High (LED off)
+                //  TODO: Draw the LED as off
                 console.log("LED off");
                 break;
               }
