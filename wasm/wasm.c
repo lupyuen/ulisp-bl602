@@ -71,5 +71,16 @@ int bl_gpio_output_set(uint8_t pin, uint8_t value) {
 
 /// Add a delay event. 1 tick is 1 millisecond
 void time_delay(uint32_t ticks) { 
-    //  TODO
+    //  How many chars in the Simulation Events buffer to keep
+    int keep = 
+        strlen(events)  //  Keep the existing events
+        - 1;            //  Skip the trailing "]"
+    snprintf(
+        events + keep,
+        sizeof(events) - keep,
+        ", { \"time_delay\": { "
+            "\"ticks\": %d "
+        "} } ]",
+        ticks
+    );
 }
