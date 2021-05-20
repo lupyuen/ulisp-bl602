@@ -1,4 +1,5 @@
 //  WebAssembly Interface for uLisp
+#include <setjmp.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -33,9 +34,15 @@ const char *get_simulation_events(void) {
 /// Preempt the uLisp task and allow background tasks to run.
 /// Called by event() and sp_loop() in src/ulisp.c
 void yield_ulisp(void) {
-    //  TODO: If uLisp is running a loop or recursion,
+    //  If uLisp is running a loop or recursion,
     //  the Simulation Events buffer may overflow.
-    //  If we have yielded too many times, stop.
+    //  We stop before the buffer overflows.
+    if (strlen(events) + 100 >= sizeof(events)) {  //  Assume 100 bytes of leeway
+        //  Cancel the loop or recursion by jumping to loop_ulisp() in src/ulisp.c
+        puts("Too many iterations, stopping the loop");
+        extern jmp_buf exception;  //  Defined in src/ulisp.c
+        longjmp(exception, 1);
+    }
 }
 
 /// Add a GPIO event to enable input (0 for to disable pullup/pulldown, 1 to enable pullup/pulldown)
