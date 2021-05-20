@@ -1239,10 +1239,7 @@
       <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
     </div>
     <textarea id="output" rows="8"></textarea>
-    <textarea id="input">( list
-    ( digitalwrite 11 :high )
-    ( digitalwrite 11 :low )
-)</textarea>
+    <textarea id="input">( digitalwrite 11 :low )</textarea>
     <input id="run" type="button" value="Run" onclick="runScript()"></input>
 
     <script type='text/javascript'>
@@ -1437,7 +1434,7 @@
         }
       }
 
-      /// Set GPIO pin output to the value: 0 (Low) or 1 (High)
+      /// Simulate setting GPIO pin output to value 0 (Low) or 1 (High)
       function gpio_output_set(pin, value) {
         //  Get the HTML Canvas Context
         const ctx = document.getElementById('canvas').getContext('2d');
