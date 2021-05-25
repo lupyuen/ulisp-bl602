@@ -32,7 +32,7 @@ const char *get_simulation_events(void) {
 }
 
 /// Preempt the uLisp task and allow background tasks to run.
-/// Called by event() and sp_loop() in src/ulisp.c
+/// Called by eval() and sp_loop() in src/ulisp.c
 void yield_ulisp(void) {
     //  If uLisp is running a loop or recursion,
     //  the Simulation Events buffer may overflow.
