@@ -192,7 +192,11 @@ FILLROUNDRECT, DRAWTRIANGLE, FILLTRIANGLE, DRAWCHAR, SETCURSOR, SETTEXTCOLOR, SE
 FILLSCREEN, SETROTATION, INVERTDISPLAY, KEYWORDS, 
 K_HIGH, K_LOW,
 K_INPUT, K_INPUT_PULLUP, K_INPUT_PULLDOWN, K_OUTPUT,
-USERFUNCTIONS, ENDFUNCTIONS };
+USERFUNCTIONS, 
+//  Begin User Functions
+BL_GPIO_OUTPUT_SET,
+//  End User Functions
+ENDFUNCTIONS };
 
 // Global variables
 
@@ -4127,6 +4131,30 @@ object *fn_invertdisplay (object *args, object *env) {
 
 // Insert your own function definitions here
 
+//  Expose the C function `bl_gpio_output_set` to uLisp:
+//  `int bl_gpio_output_set(uint8_t pin, uint8_t value)`
+object *fn_bl_gpio_output_set(object *args, object *env) {
+  //  Fetch the `pin` parameter from uLisp
+  assert(args != NULL);
+  int pin = checkinteger(BL_GPIO_OUTPUT_SET, car(args));
+  args = cdr(args);
+
+  //  Fetch the `value` parameter from uLisp
+  assert(args != NULL);
+  int value = checkinteger(BL_GPIO_OUTPUT_SET, car(args));
+  args = cdr(args);
+
+  //  No more parameters
+  assert(args == NULL);
+  printf("bl_gpio_output_set: pin=%d, value=%d\r\n", pin, value);
+
+  //  Call the C function `bl_gpio_output_set`
+  int result = bl_gpio_output_set(pin, value);
+
+  //  Return the result to uLisp
+  return number(result);
+}
+
 // Built-in symbol names
 const char string0[] PROGMEM = "nil";
 const char string1[] PROGMEM = "t";
@@ -4354,6 +4382,8 @@ const char string222[] PROGMEM = ":output";
 const char string223[] PROGMEM = "";
 
 // Insert your own function names here
+
+const char str_bl_gpio_output_set[] PROGMEM = "bl_gpio_output_set";
 
 // Built-in symbol lookup table
 const tbl_entry_t lookup_table[] PROGMEM = {
@@ -4583,6 +4613,8 @@ const tbl_entry_t lookup_table[] PROGMEM = {
   { string223, NULL, 0x00 },
 
 // Insert your own table entries here
+
+  { str_bl_gpio_output_set, fn_bl_gpio_output_set, 0x22 },
 
 };
 
