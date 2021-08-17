@@ -4,7 +4,7 @@ __This is the `sdk` branch that integrates uLisp with BL602 IoT SDK. See...__
 
 https://lupyuen.github.io/articles/rustsim
 
-We __expose a C function__ from BL602 IoT SDK like so: [`ulisp.c`](src/ulisp.c#L4134-L4156)
+We __expose a C function__ from BL602 IoT SDK like so: [`ulisp.c`](src/ulisp.c#L4164-L4186)
 
 ```c
 //  Expose the C function `bl_gpio_output_set` to uLisp:
