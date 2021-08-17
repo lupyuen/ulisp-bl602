@@ -1,5 +1,9 @@
 # Simulate BL602 with uLisp WebAssembly
 
+__This is the `sdk` branch that integrates uLisp with BL602 IoT SDK. See...__
+
+https://lupyuen.github.io/articles/rustsim
+
 What if we...
 
 1.  Compile the __uLisp Interpreter to WebAssembly__...
