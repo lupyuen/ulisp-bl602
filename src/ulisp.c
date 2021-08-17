@@ -4161,7 +4161,6 @@ object *fn_bl_gpio_enable_output(object *args, object *env) {
   return number(result);
 }
 
-
 //  Expose the C function `bl_gpio_output_set` to uLisp:
 //  `int bl_gpio_output_set(uint8_t pin, uint8_t value)`
 object *fn_bl_gpio_output_set(object *args, object *env) {
