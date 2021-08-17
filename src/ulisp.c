@@ -194,6 +194,7 @@ K_HIGH, K_LOW,
 K_INPUT, K_INPUT_PULLUP, K_INPUT_PULLDOWN, K_OUTPUT,
 USERFUNCTIONS, 
 //  Begin User Functions
+BL_GPIO_ENABLE_OUTPUT,
 BL_GPIO_OUTPUT_SET,
 //  End User Functions
 ENDFUNCTIONS };
@@ -4131,6 +4132,36 @@ object *fn_invertdisplay (object *args, object *env) {
 
 // Insert your own function definitions here
 
+//  Expose the C function `bl_gpio_enable_output` to uLisp:
+//  `int bl_gpio_enable_output(uint8_t pin, uint8_t pullup, uint8_t pulldown)`
+object *fn_bl_gpio_enable_output(object *args, object *env) {
+  //  Fetch the `pin` parameter from uLisp
+  assert(args != NULL);
+  int pin = checkinteger(BL_GPIO_ENABLE_OUTPUT, car(args));
+  args = cdr(args);
+
+  //  Fetch the `pullup` parameter from uLisp
+  assert(args != NULL);
+  int pullup = checkinteger(BL_GPIO_ENABLE_OUTPUT, car(args));
+  args = cdr(args);
+
+  //  Fetch the `pulldown` parameter from uLisp
+  assert(args != NULL);
+  int pulldown = checkinteger(BL_GPIO_ENABLE_OUTPUT, car(args));
+  args = cdr(args);
+
+  //  No more parameters
+  assert(args == NULL);
+  printf("bl_gpio_enable_output: pin=%d, pullup=%d, pulldown=%d\r\n", pin, pullup, pulldown);
+
+  //  Call the C function `bl_gpio_enable_output`
+  int result = bl_gpio_enable_output(pin, pullup, pulldown);
+
+  //  Return the result to uLisp
+  return number(result);
+}
+
+
 //  Expose the C function `bl_gpio_output_set` to uLisp:
 //  `int bl_gpio_output_set(uint8_t pin, uint8_t value)`
 object *fn_bl_gpio_output_set(object *args, object *env) {
@@ -4383,6 +4414,7 @@ const char string223[] PROGMEM = "";
 
 // Insert your own function names here
 
+const char str_bl_gpio_enable_output[] PROGMEM = "bl_gpio_enable_output";
 const char str_bl_gpio_output_set[] PROGMEM = "bl_gpio_output_set";
 
 // Built-in symbol lookup table
@@ -4614,6 +4646,7 @@ const tbl_entry_t lookup_table[] PROGMEM = {
 
 // Insert your own table entries here
 
+  { str_bl_gpio_enable_output, fn_bl_gpio_enable_output, 0x33 },
   { str_bl_gpio_output_set, fn_bl_gpio_output_set, 0x22 },
 
 };
