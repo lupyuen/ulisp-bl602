@@ -4,6 +4,43 @@ __This is the `sdk` branch that integrates uLisp with BL602 IoT SDK. See...__
 
 https://lupyuen.github.io/articles/rustsim
 
+We __expose a C function__ from BL602 IoT SDK like so: [`ulisp.c`](src/ulisp.c#L4134-L4156)
+
+```c
+//  Expose the C function `bl_gpio_output_set` to uLisp:
+//  `int bl_gpio_output_set(uint8_t pin, uint8_t value)`
+object *fn_bl_gpio_output_set(object *args, object *env) {
+  //  Fetch the `pin` parameter from uLisp
+  assert(args != NULL);
+  int pin = checkinteger(BL_GPIO_OUTPUT_SET, car(args));
+  args = cdr(args);
+
+  //  Fetch the `value` parameter from uLisp
+  assert(args != NULL);
+  int value = checkinteger(BL_GPIO_OUTPUT_SET, car(args));
+  args = cdr(args);
+
+  //  No more parameters
+  assert(args == NULL);
+
+  //  Call the C function `bl_gpio_output_set`
+  int result = bl_gpio_output_set(pin, value);
+
+  //  Return the result to uLisp
+  return number(result);
+}
+```
+
+Which will be __called from uLisp__ like so...
+
+```text
+( bl_gpio_output_set 11 0 )
+```
+
+[(More about this)](http://www.ulisp.com/show?19Q4)
+
+# Previously
+
 What if we...
 
 1.  Compile the __uLisp Interpreter to WebAssembly__...
