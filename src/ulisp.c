@@ -196,6 +196,7 @@ USERFUNCTIONS,
 //  Begin User Functions
 BL_GPIO_ENABLE_OUTPUT,
 BL_GPIO_OUTPUT_SET,
+TIME_DELAY,
 //  End User Functions
 ENDFUNCTIONS };
 
@@ -4185,6 +4186,25 @@ object *fn_bl_gpio_output_set(object *args, object *env) {
   return number(result);
 }
 
+//  Expose the C function `time_delay` to uLisp:
+//  `void time_delay(uint32_t ticks)`
+object *fn_time_delay(object *args, object *env) {
+  //  Fetch the `ticks` parameter from uLisp
+  assert(args != NULL);
+  int ticks = checkinteger(TIME_DELAY, car(args));
+  args = cdr(args);
+
+  //  No more parameters
+  assert(args == NULL);
+  printf("time_delay: ticks=%d\r\n", ticks);
+
+  //  Call the C function `time_delay`
+  time_delay(ticks);
+
+  //  Return the result to uLisp
+  return nil;
+}
+
 // Built-in symbol names
 const char string0[] PROGMEM = "nil";
 const char string1[] PROGMEM = "t";
@@ -4415,6 +4435,7 @@ const char string223[] PROGMEM = "";
 
 const char str_bl_gpio_enable_output[] PROGMEM = "bl_gpio_enable_output";
 const char str_bl_gpio_output_set[] PROGMEM = "bl_gpio_output_set";
+const char str_time_delay[] PROGMEM = "time_delay";
 
 // Built-in symbol lookup table
 const tbl_entry_t lookup_table[] PROGMEM = {
@@ -4647,6 +4668,7 @@ const tbl_entry_t lookup_table[] PROGMEM = {
 
   { str_bl_gpio_enable_output, fn_bl_gpio_enable_output, 0x33 },
   { str_bl_gpio_output_set, fn_bl_gpio_output_set, 0x22 },
+  { str_time_delay, fn_time_delay, 0x11 },
 
 };
 
