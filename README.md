@@ -1,10 +1,8 @@
 # Simulate BL602 with uLisp WebAssembly
 
-__This is the `sdk` branch that integrates uLisp with BL602 IoT SDK. See...__
+__This is the `sdk` branch that integrates uLisp with BL602 IoT SDK. Read the article...__
 
-https://lupyuen.github.io/articles/rustsim
-
-[Follow the updates in this Twitter Thread](https://twitter.com/MisterTechBlog/status/1427758328004759552)
+-   ["Rust on RISC-V BL602: Rhai Scripting"](https://lupyuen.github.io/articles/rhai)
 
 We __expose a C function__ from BL602 IoT SDK like so: [`ulisp.c`](src/ulisp.c#L4164-L4186)
 
